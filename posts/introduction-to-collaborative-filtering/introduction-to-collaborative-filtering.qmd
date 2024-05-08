@@ -1,0 +1,25 @@
+---
+title: "Introduction to Collaborative Filtering"
+author: "Your Name"
+date: "2024-05-08"
+categories: []
+tags: [RecSys]
+draft: true
+---
+
+# Introduction to Collaborative Filtering
+
+Collaborative filtering is a Recommendation System (RecSys) technique that uses the preferences of a group of users to recommend items to other users. It is based on the idea that similar users tend to like similar items. Collaborative filtering can be divided into two main types: user-based and item-based. Let's explore ite-based collaborative filtering in more detail first.
+
+## Item-Based Collaborative Filtering
+Let's say we want to recommend movies to users. We have $n_m$ movies and $n_u$ users. We can represent the user-item matrix as $R_{n_u \times n_m}$, where $R_{ij}$ is the rating of user $i$ for movie $j$. The user-item matrix can be very sparse since not all users rate all movies. Thus, if we want to recommend movies to a user which they have not rated, but likely to rate higher. We can determine this rating based on the ratings of the similar movies that the user has rated.
+
+Let's define some variables.
+- $n_u$: Number of users
+- $n_m$: Number of movies
+- $R^{(i, j)}$: Rating of user $i$ for movie $j$
+- $P^{(i, j)}$: 1 if user $i$ has rated movie $j$, 0 otherwise
+- $m_i$: Number of movies rated by user $i$
+- $/lambda$: Regularization parameter
+
+
