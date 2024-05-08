@@ -6,14 +6,14 @@ about:
   links:
     - icon: twitter
       text: Twitter
-      href: https://twitter.com
+      href: https://twitter.com/ravi_mandliya
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/mandliya/
     - icon: github
       text: Github
-      href: https://github.com
+      href: https://github.com/mandliya
 
 ---
 
-About this blog
+Hello My Name is Ravi Mandliya. I am a curious learner. My interests include Recommendation Systems, Machine Learning and Deep Learning.  I love diving deep into these fields and finding practical ways to apply their principles in real-world scenarios.
