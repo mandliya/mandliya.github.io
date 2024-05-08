@@ -1,5 +1,5 @@
 ---
-title: "mandliya.github.io"
+title: "Ravi Mandliya"
 listing:
   contents: posts
   sort: "date desc"
