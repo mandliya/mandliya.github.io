@@ -160,3 +160,7 @@ When evaluating the effectiveness of inference optimization techniques, several 
 
 ## Conclusion
 In this post, we provided an overview of LLM inference, its importance, and the challenges associated with it. We also outlined the key problem formulations that will guide our exploration of optimization techniques in subsequent posts. By understanding the intricacies of LLM inference and the factors that influence its performance, we can better appreciate the significance of optimization techniques in making LLMs more practical for real-world applications. In the next post, we will delve deeper into specific optimization techniques and their implementations, focusing on reducing latency and resource consumption while maintaining model performance.
+
+## References
+- [Attention is All You Need](https://arxiv.org/abs/1706.03762)
+- [Inference Optimization of Foundation Models on AI Accelerators](https://arxiv.org/abs/2407.09111)
