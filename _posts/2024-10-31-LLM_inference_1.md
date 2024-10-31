@@ -1,5 +1,5 @@
 ---
-title: "Primer on Large Language Model (LLM) Inference Optimizations : Background and Problem Formulations"
+title: "Primer on Large Language Model (LLM) Inference Optimizations: 1. Background and Problem Formulations"
 date: 2024-10-31 13:43:48 -0700
 categories: [Large Language Model, Inference Optimization]
 tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, K-V Caching, Memory Calculation, Optimization Metrics, Optimization Techniques]
@@ -10,7 +10,7 @@ mermaid: true
 pin: false
 ---
 
-# Primer on Large Language Model (LLM) Inference Optimizations : Background and Problem Formulations
+# Primer on Large Language Model (LLM) Inference Optimizations : 1. Background and Problem Formulations
 
 Large Language Models (LLMs) have revolutionized the field of Natural Language Processing (NLP) by enabling a wide range of applications, from chatbots, AI agents to code and content generation. However, the deployment of LLMs in real-world scenarios often faces challenges related to latency, resource consumption, and scalability. In this series of blog posts, we will explore various optimization techniques for LLM inference. We’ll dive into strategies for reducing latency, memory footprint, and computational cost, from caching mechanisms to hardware accelerations and model quantization.
 
