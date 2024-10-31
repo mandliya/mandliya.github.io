@@ -66,7 +66,7 @@ With an understanding of LLMs and transformer architecture, let’s outline the 
 
 ![Prefill Stage](assets/img/inference_1/prefill_stage.png)
 
-2. **Decoding Stage**: In this stage, the model generates the output tokens one at a time. For each token, the model uses the stored key and value representations from the prefill stage, along with the current input token's query representation to compute the next token in the sequence. This process continues until a stopping criterion is met (e.g., reaching a maximum length or generating an end-of-sequence token). In this stage, a token sampling strategy is also applied to determine the next token to generate (e.g., greedy search, beam search, top-k sampling).
+2. **Decoding Stage**: In this stage, the model generates the output tokens one at a time in auto-regressive manner. For each token, the model fetches the key and value representations from the K-V cache stored during the prefill stage, along with the current input token's query representation to compute the next token in the sequence. This process continues until a stopping criterion is met (e.g., reaching a maximum length or generating an end-of-sequence token). The new key and value representations are stored in the K-V cache for subsequent tokens. In this stage, a token sampling strategy is also applied to determine the next token to generate (e.g., greedy search, beam search, top-k sampling).
 
 ![Decoding Stage](assets/img/inference_1/decoding_stage.png)
 
