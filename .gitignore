@@ -1,4 +1,5 @@
 # Bundler cache
+.DS_Store
 .bundle
 vendor
 Gemfile.lock
