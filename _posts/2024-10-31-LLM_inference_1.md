@@ -1,5 +1,5 @@
 ---
-title: "Primer on Large Language Model (LLM) Inference Optimizations: 1. Background and Problem Formulations"
+title: "Primer on Large Language Model (LLM) Inference Optimizations: 1. Background and Problem Formulation"
 date: 2024-10-31 13:43:48 -0700
 categories: [Large Language Model, Inference Optimization]
 tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, K-V Caching, Memory Calculation, Optimization Metrics, Optimization Techniques]
@@ -9,8 +9,6 @@ math: true
 mermaid: true
 pin: false
 ---
-
-# Primer on Large Language Model (LLM) Inference Optimizations : 1. Background and Problem Formulations
 
 Large Language Models (LLMs) have revolutionized the field of Natural Language Processing (NLP) by enabling a wide range of applications, from chatbots, AI agents to code and content generation. However, the deployment of LLMs in real-world scenarios often faces challenges related to latency, resource consumption, and scalability. In this series of blog posts, we will explore various optimization techniques for LLM inference. We’ll dive into strategies for reducing latency, memory footprint, and computational cost, from caching mechanisms to hardware accelerations and model quantization.
 
@@ -144,22 +142,22 @@ When evaluating the effectiveness of inference optimization techniques, several 
 
 ## Types of Inference Optimization Techniques
 
-- Model Architecture Optimization: Modifying the model architecture to improve inference efficiency, such as reducing the number of layers or attention heads, or using more efficient attention mechanisms (e.g., sparse attention).
+- **Model Architecture Optimization**: Modifying the model architecture to improve inference efficiency, such as reducing the number of layers or attention heads, or using more efficient attention mechanisms (e.g., sparse attention).
 
-- System Optimization: Optimizing the underlying hardware and software infrastructure, such as using specialized hardware (e.g., TPUs, GPUs) or optimizing the software stack (e.g., using efficient libraries and frameworks). It can be broken down into:
-    - Memory management: Efficiently managing memory usage to reduce overhead and improve performance.
-    - Efficient Computation: Leveraging parallelism and optimizing computation to reduce latency.
-    - Batching: Processing multiple requests simultaneously to improve throughput.
-    - Scheduling: Efficiently scheduling tasks to maximize resource utilization.
+- **System Optimization**: Optimizing the underlying hardware and software infrastructure, such as using specialized hardware (e.g., TPUs, GPUs) or optimizing the software stack (e.g., using efficient libraries and frameworks). It can be broken down into:
+    - **Memory management**: Efficiently managing memory usage to reduce overhead and improve performance.
+    - **Efficient Computation**: Leveraging parallelism and optimizing computation to reduce latency.
+    - **Batching**: Processing multiple requests simultaneously to improve throughput.
+    - **Scheduling**: Efficiently scheduling tasks to maximize resource utilization.
 
-- Model Compressions: Techniques like quantization, pruning, and distillation can be used to reduce the size of the model and improve inference speed without significantly sacrificing performance.
+- **Model Compressions**: Techniques like quantization, pruning, and distillation can be used to reduce the size of the model and improve inference speed without significantly sacrificing performance.
 
-- Algorithm Optimization: Improving the algorithms used for inference, such as using more efficient sampling strategies or optimizing the attention mechanism. E.g. Specuative decoding, which allows the model to generate multiple tokens in parallel, can significantly reduce decoding latency.
+- **Algorithm Optimization**: Improving the algorithms used for inference, such as using more efficient sampling strategies or optimizing the attention mechanism. E.g. Specuative decoding, which allows the model to generate multiple tokens in parallel, can significantly reduce decoding latency.
 
 ![Taxonomy of Optimization Techniques](assets/img/inference_1/taxonomy.png)
 
 ## Conclusion
-In this post, we provided an overview of LLM inference, its importance, and the challenges associated with it. We also outlined the key problem formulations that will guide our exploration of optimization techniques in subsequent posts. By understanding the intricacies of LLM inference and the factors that influence its performance, we can better appreciate the significance of optimization techniques in making LLMs more practical for real-world applications. In the next post, we will delve deeper into specific optimization techniques and their implementations, focusing on reducing latency and resource consumption while maintaining model performance.
+In this post, we provided an overview of LLM inference, its importance, and the challenges associated with it. We also outlined the key problem formulation that will guide our exploration of optimization techniques in subsequent posts. By understanding the intricacies of LLM inference and the factors that influence its performance, we can better appreciate the significance of optimization techniques in making LLMs more practical for real-world applications. In the next post, we will detour to understand hardware AI accelarators, so we can delve deeper into specific optimization techniques and their implementations in subsequent posts.
 
 ## References
 - [Attention is All You Need](https://arxiv.org/abs/1706.03762)
