@@ -86,13 +86,11 @@ For a prefix of length $L$, embedding size $d$, and a model with $h$ heads and $
 As we can see, the complexity of the inference computation is influenced by the length of the input sequence ($L$), the number of layers ($n$), the number of attention heads ($h$), and the embedding size ($d$). The quadratic complexity of the attention mechanism in the prefill stage means that as the input sequence length increases, the computational load grows significantly, leading to higher latency and resource consumption. In the decoding stage, the sequential nature of token generation prevents parallelization, introducing latency, especially for generating lengthy outputs. This complexity can become a bottleneck in real-time applications, especially when dealing with long input sequences and/or large models.
 
 
-
-
 ## Importance of K-V Caching
 
 K-V caching is a crucial optimization technique for LLM inference, particularly in the decoding stage. By storing the key and value representations computed during the prefill stage, the model can avoid redundant computations for previously processed tokens. This significantly reduces the computational cost and latency during inference, as the model only needs to compute the attention scores for the new token being generated, rather than recalculating the key and value representations for all tokens in the input sequence. This makes the cost linear with respect to the number of generated tokens, rather than quadratic with respect to the input length.
 
-However, K-V caching does require additional memory to store the key and value representations, which can be a trade-off in resource-constrained environments. 
+However, K-V caching does require additional memory to store the key and value representations, which can be a trade-off in resource-constrained environments. In future posts, we will explore memory optimization techniques to reduce the memory footprint of the K-V cache while maintaining inference efficiency.
 
 ## Calculations for an example model
 
