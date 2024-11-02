@@ -81,9 +81,11 @@ For a prefix of length $L$, embedding size $d$, and a model with $h$ heads and $
 
     - Feed-forward computation: For each generated token, we perform feed-forward operations in every layer. Since it’s done for one token at a time (not the whole sequence), the complexity per token is: $O(n \cdot d^2)$.
     - Attention computation with caching: Each new token interacts with the existing sequence through attention, using the previously computed key-value pairs. For each token generated, this attention computation is proportional to the sequence length  L , giving: $O(L \cdot n \cdot d \cdot h)$
+ 
+
+As we can see, the complexity of the inference computation is influenced by the length of the input sequence ($L$), the number of layers ($n$), the number of attention heads ($h$), and the embedding size ($d$). The quadratic complexity of the attention mechanism in the prefill stage means that as the input sequence length increases, the computational load grows significantly, leading to higher latency and resource consumption. In the decoding stage, the sequential nature of token generation prevents parallelization, introducing latency, especially for generating lengthy outputs. This complexity can become a bottleneck in real-time applications, especially when dealing with long input sequences and/or large models.
 
 
-As we can see, the complexity of the inference computation is influenced by the length of the input sequence ($L$), the number of layers ($n$), the number of attention heads ($h$), and the embedding size ($d$). This complexity can become a bottleneck in real-time applications, especially when dealing with long input sequences and/or large models.
 
 
 ## Importance of K-V Caching
