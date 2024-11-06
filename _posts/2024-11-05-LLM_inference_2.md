@@ -57,9 +57,9 @@ The distinct architectures of CPUs and AI accelerators make them suited for diff
 | Energy Efficiency | Less efficient | More efficient |
 
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/cpu_vs_gpu.png" width="400"/>
-</div>
+![A diagram comparing CPU and GPU architectures, highlighting differences in core count and parallel processing capabilities.](assets/img/inference_2/cpu_vs_gpu.png)
+*Reference: Programming Massively Parallel Processors by David B. Kirk and Wen-mei W. Hwu [1]*
+
 
 Note that in CPU there are fewer cores (4-8) and the design is optimized for low latency and high single-threaded performance. In contrast, GPUs have thousands of cores and are optimized for high throughput and parallel processing. This parallel processing capability allows GPUs to handle large-scale AI workloads efficiently.
 
@@ -72,9 +72,8 @@ AI accelerators are built with several features that make them ideal for handlin
 
 AI accelerators are designed for large-scale parallel processing, thanks to their architecture with thousands of cores. This parallelism allows them to handle the intensive matrix calculations required in LLM inference efficiently. Many accelerators also include specialized tensor cores, which are optimized for tensor operations such as matrix multiplications. These capabilities make AI accelerators significantly faster than CPUs when processing LLM tasks at scale.
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/mat_mul.png" width="400"/>
-</div>
+![A diagram showing the matrix multiplication operation in a neural network, highlighting the parallel processing capabilities of AI accelerators.](assets/img/inference_2/mat_mul.png)
+*Reference: Inference Optimization of Foundation Models on AI Accelerators by Youngsuk Park, et al.*
 
 ### High Bandwidth Memory
 
@@ -87,9 +86,8 @@ AI accelerators are equipped with high-speed interconnects to facilitate fast da
 ### Low Precision Arithmetic
 Another advantage of AI accelerators is their support for low-precision arithmetic, such as 8-bit integer and 16-bit floating-point calculations. This reduces memory usage and energy consumption, making AI tasks more efficient. For LLM inference, low-precision calculations provide faster processing while maintaining sufficient accuracy for most applications. AI accelerators have very rich data type selection.
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/datatypes.png" width="400"/>
-</div>
+![data types](assets/img/inference_2/datatypes.png)
+*Reference: Inference Optimization of Foundation Models on AI Accelerators by Youngsuk Park, et al.*
 
 ### Optimized Libraries and Frameworks
 
@@ -108,9 +106,7 @@ Different types of parallelism techniques are employed to maximize the efficienc
 
 Data parallelism involves splitting the input data into multiple batches and processing each batch in parallel. This is useful for AI workloads that involve large datasets, such as deep learning training and inference. By distributing the data across multiple devices, AI accelerators can process the workload faster and improve overall performance. An example of data parallelism in LLM inference is splitting the input text into batches and processing each batch on a separate accelerator.
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/data_parallelism.png" width="400"/>
-</div>
+![data parallelism](assets/img/inference_2/data_parallelism.png)
 
 
 ### Model Parallelism
@@ -121,24 +117,18 @@ Model parallelism can be implemented in two main approaches:
 
 **Intra-layer Parallelism (Tensor Parallelism)**: Individual layers or components are split across devices, with each device handling a portion of the computation within the same layer. For example, in transformer models, attention heads or feed-forward network layers can be distributed across multiple devices. This approach minimizes communication overhead since devices only need to synchronize at layer boundaries.
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/tensor_parallelism.png" width="400"/>
-</div>
+![tensor parallelism](assets/img/inference_2/tensor_parallelism.png)
 
 **Inter-layer Parallelism (Pipeline Parallelism)**: Sequential groups of layers are distributed across devices, creating a pipeline of computation. Each device processes its assigned layers before passing the results to the next device in the pipeline. This approach is particularly effective for deep networks but introduces pipeline latency.
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/pipeline_parallelism.png" width="400"/>
-</div>
+![pipeline parallelism](assets/img/inference_2/pipeline_parallelism.png)
 
 
 ### Task Parallelism
 
 Task parallelism involves splitting the AI workload into multiple tasks and processing each task in parallel. This is useful for AI workloads that involve multiple independent tasks, such as autonomous driving. By processing the tasks in parallel, AI accelerators can reduce the time it takes to complete complex tasks and improve overall performance. Task parallelism is commonly used in AI accelerators to accelerate tasks like object detection and video analysis.
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/task_parallelism.png" width="400"/>
-</div>
+![task parallelism](assets/img/inference_2/task_parallelism.png)
 
 Consider an LLM with 70 billion parameters processing a batch of text inputs:
 
@@ -155,9 +145,7 @@ AI Accelerators often work in tandem with main CPU to offload the heavy computat
 
 - **Device**: The AI Accelerators. They are responsible for the heavy computation tasks. After receiving data from the host, the accelerator loads it into its specialized memory and performs parallel processing optimized for AI workloads, such as matrix multiplications. Once it completes the processing, it stores the results and transfers them back to the host.
 
-<div style="text-align: center;">
-<img src="assets/img/inference_2/coprocessor_mode.png" width="400"/>
-</div>
+![coprocessor mode](assets/img/inference_2/coprocessor_mode.jpg)
 
 ## Emerging Trends in AI Accelerators
 
@@ -175,4 +163,8 @@ NPUs are specialized for deep learning and neural network tasks, providing effic
 ## Conclusion
 
 In this post we discussed the role of AI accelerators in enhancing the performance of AI workloads, including LLM inference. By leveraging the parallel processing capabilities, high-speed memory, and low-precision arithmetic of accelerators, organizations can achieve significant performance gains and cost savings when deploying LLMs at scale. Understanding the key features and types of AI accelerators is essential for optimizing LLM inference and ensuring efficient resource utilization in large-scale AI deployments. In the next post, we will discuss the system optimization techniques for deploying LLMs at scale using AI accelerators.
+
+## References
+- [1] Programming Massively Parallel Processors by David B. Kirk and Wen-mei W. Hwu
+- [2] Inference Optimization of Foundation Models on AI Accelerators by Youngsuk Park, et al.
 
