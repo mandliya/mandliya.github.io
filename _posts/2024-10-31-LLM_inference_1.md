@@ -10,6 +10,11 @@ mermaid: true
 pin: false
 ---
 
+**Posts in this series**:
+1. **[Primer on Large Language Model (LLM) Inference Optimizations: 1. Background and Problem Formulation](https://mandliya.github.io/posts/LLM_inference_1/)** (this post)
+2. [Primer on Large Language Model (LLM) Inference Optimizations: 2. Introduction to Artificial Intelligence (AI) Accelerators](https://mandliya.github.io/posts/LLM_inference_2/)
+
+
 Large Language Models (LLMs) have revolutionized the field of Natural Language Processing (NLP) by enabling a wide range of applications, from chatbots, AI agents to code and content generation. However, the deployment of LLMs in real-world scenarios often faces challenges related to latency, resource consumption, and scalability. In this series of blog posts, we will explore various optimization techniques for LLM inference. We’ll dive into strategies for reducing latency, memory footprint, and computational cost, from caching mechanisms to hardware accelerations and model quantization.
 
 In this post, we will provide a brief overview of LLM inference, its importance, and the challenges associated with it. We will also outline the key problem formulations that will guide our exploration of optimization techniques. 
