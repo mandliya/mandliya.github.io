@@ -18,7 +18,7 @@ In the previous [post](https://mandliya.github.io/posts/LLM_inference_1/), we di
 
 ## Why AI Accelerators?
 
-If you ever wonder how companies like OpenAI and Google manage to run these massive language models serving millions of users simulataneously, the secret lies in specialized hardware called AI accelerators. While traditional CPUs handle general-purpose tasks well, they aren’t optimized for the demands of AI workloads. AI accelerators, by contrast, are purpose-built for AI tasks, offering high-speed data access, parallel processing capabilities, and support for low-precision arithmetic. By shifting computation to AI accelerators, organizations can achieve significant performance gains and reduce costs, especially when running complex models like LLMs. Let’s explore some common types of AI accelerators and their unique advantages for these workloads. 
+If you ever wondered how companies like OpenAI and Google manage to run these massive language models serving millions of users  simultaneously, the secret lies in specialized hardware called AI accelerators. While traditional CPUs handle general-purpose tasks well, they aren’t optimized for the demands of AI workloads. AI accelerators, by contrast, are purpose-built for AI tasks, offering high-speed data access, parallel processing capabilities, and support for low-precision arithmetic. By shifting computation to AI accelerators, organizations can achieve significant performance gains and reduce costs, especially when running complex models like LLMs. Let’s explore some common types of AI accelerators and their unique advantages for these workloads. 
 
 
 ## Types of AI Accelerators
@@ -27,7 +27,7 @@ AI accelerators come in several forms, each tailored for specific AI tasks and e
 
 ### Graphics Processing Units (GPUs)
 
-Originally developed for graphics rendering, GPUs have become a powerful tool for deep learning tasks due to their parallel processing capabilities. Their architecture is well-suited for high-throughput matrix calculations, which are essential for tasks like LLM inference. GPUs are particularly popular in data centers for training and inference at scale, with models like NVIDIA Tesla, AMD Radeon, and Intel Xe being widely used in both cloud and on-premises environments.
+Originally developed for graphics rendering, GPUs have become a powerful tool for deep learning tasks due to their parallel processing capabilities. Their architecture is well-suited for high-throughput matrix calculations, which are essential for tasks like LLM inference. GPUs are particularly popular in data centers for training and inference at scale. GPUs like NVIDIA Tesla, AMD Radeon, and Intel Xe being widely used in both cloud and on-premises environments.
 
 ### Tensor Processing Units (TPUs)
 
@@ -35,7 +35,7 @@ Google developed TPUs specifically for deep learning workloads, with optimizatio
 
 ### Field-Programmable Gate Arrays (FPGAs) / Application-Specific Integrated Circuits (ASICs)
 
-Google developed TPUs specifically for deep learning workloads, with optimizations for TensorFlow-based training and inference. TPUs are designed to accelerate large-scale AI tasks efficiently, powering many of Google’s applications, including search and translation. Available through Google Cloud, TPUs offer high performance for both training and inference, making them a preferred choice for TensorFlow users.
+FPGAs and ASICs are two distinct types of customizable accelerators that support specific AI tasks. FPGAs are reprogrammable, which allow them to adapt to different AI models and applications, while ASICs are purpose-built for specific tasks, offering maximum efficiency for those workloads. Both types are used in data centers and at the edge, where low latency and high throughput are crucial. Examples include Intel Arria and Xilinx Alveo (FPGAs) and Google’s Edge TPU (ASICs).
 
 ## Key differences between CPUs and AI Accelerators
 
@@ -66,7 +66,7 @@ Note that in CPU there are fewer cores (4-8) and the design is optimized for low
 
 ## Key Features of AI Accelerators & Impact on LLM Inference
 
-AI accelerators are built with several features that make them ideal for handling large-scale AI workloads like LLM inference. These features include:
+AI accelerators are built with several features that make them ideal for handling large-scale AI workloads like LLM inference. Key features include:
 
 ### Parallel Processing
 
@@ -98,7 +98,7 @@ Most AI accelerators come with optimized libraries for popular AI frameworks, su
 
 AI accelerators are highly scalable, allowing for deployment in clusters or data centers to handle large workloads efficiently. They are also designed to be energy-efficient, consuming less power than CPUs for comparable tasks, which makes them ideal for computationally intensive applications like LLM inference at scale. This efficiency helps reduce both the operational cost and environmental impact of running large AI models.
 
-## Parallism in AI Accelerators
+## Parallelism in AI Accelerators
 
 Different types of parallelism techniques are employed to maximize the efficiency of AI accelerators for LLM inference:
 
@@ -126,7 +126,7 @@ Model parallelism can be implemented in two main approaches:
 
 ### Task Parallelism
 
-Task parallelism involves splitting the AI workload into multiple tasks and processing each task in parallel. This is useful for AI workloads that involve multiple independent tasks, such as autonomous driving. By processing the tasks in parallel, AI accelerators can reduce the time it takes to complete complex tasks and improve overall performance. Task parallelism is commonly used in AI accelerators to accelerate tasks like object detection and video analysis.
+Task parallelism involves splitting the AI workload into multiple tasks and processing each task in parallel. This is useful for AI workloads that involve multiple independent tasks, such as autonomous driving. By processing the tasks in parallel, AI accelerators can reduce the time it takes to complete complex tasks and improve overall performance. Task parallelism is often used in AI accelerators for tasks like object detection and video analysis.
 
 ![task parallelism](assets/img/inference_2/task_parallelism.png)
 
@@ -139,7 +139,7 @@ Consider an LLM with 70 billion parameters processing a batch of text inputs:
 
 ## Co-Processing Mode in AI Accelerators 
 
-AI Accelerators often work in tandem with main CPU to offload the heavy computation tasks. The main CPU is responsible for the general purpose tasks and the AI Accelerators are responsible for the heavy computation tasks. This is usually called co-processing. Here is a simple diagram to show how the AI Accelerators work with the main CPU. Here is some brief nomenclature for co-processing:
+AI Accelerators often work in tandem with the main CPU to offload the heavy computation tasks. The main CPU is responsible for the general purpose tasks and the AI Accelerators are responsible for the heavy computation tasks. This is usually called co-processing. Here is a simple diagram to show how the AI Accelerators work with the main CPU. Here is some brief nomenclature for co-processing:
 
 - **Host**: The main CPU. It is responsible for the main flow of the program. It orchestrates the task by loading the main data and handling input/output operations. In co-processing mode, the host initiates the process, transfers data to AI Accelerators, and receives the results. It handles all the non-computation logic and leaves the number crunching to the AI Accelerators.
 
@@ -147,7 +147,7 @@ AI Accelerators often work in tandem with main CPU to offload the heavy computat
 
 ![coprocessor mode](assets/img/inference_2/coprocessor_mode.jpg)
 
-## Emerging Trends in AI Accelerators
+## Emerging Trends in AI Accelerators [3]
 
 As AI workloads continue to grow in complexity and scale, AI accelerators are evolving to meet the demands of modern applications. Some key trends shaping the future of AI accelerators include:
 
@@ -162,9 +162,10 @@ NPUs are specialized for deep learning and neural network tasks, providing effic
 
 ## Conclusion
 
-In this post we discussed the role of AI accelerators in enhancing the performance of AI workloads, including LLM inference. By leveraging the parallel processing capabilities, high-speed memory, and low-precision arithmetic of accelerators, organizations can achieve significant performance gains and cost savings when deploying LLMs at scale. Understanding the key features and types of AI accelerators is essential for optimizing LLM inference and ensuring efficient resource utilization in large-scale AI deployments. In the next post, we will discuss the system optimization techniques for deploying LLMs at scale using AI accelerators.
+In this post, we discussed the role of AI accelerators in enhancing the performance of AI workloads, including LLM inference. By leveraging the parallel processing capabilities, high-speed memory, and low-precision arithmetic of accelerators, organizations can achieve significant performance gains and cost savings when deploying LLMs at scale. Understanding the key features and types of AI accelerators is essential for optimizing LLM inference and ensuring efficient resource utilization in large-scale AI deployments. In the next post, we will discuss the system optimization techniques for deploying LLMs at scale using AI accelerators.
 
 ## References
 - [1] Programming Massively Parallel Processors by David B. Kirk and Wen-mei W. Hwu
 - [2] Inference Optimization of Foundation Models on AI Accelerators by Youngsuk Park, et al.
+- [3] Evaluating Emerging AI/ML Accelerators: IPU, RDU, and NVIDIA/AMD GPUs by Hongwu Peng, et al.
 
