@@ -135,7 +135,7 @@ Consider an LLM with 70 billion parameters processing a batch of text inputs:
 - **Data Parallelism**: The input batch is split across multiple GPUs, each processing a portion of the inputs independently.
 - **Tensor Parallelism**: The transformer model's attention heads are distributed across multiple devices, with each device handling a subset of the heads.
 - **Pipeline Parallelism**: The transformer model's layers are split into sequential groups, with each group processed by a different device in a pipelined fashion.
-**Task Parallelism**: Multiple independent inference requests are processed simultaneously on different accelerator units.
+- **Task Parallelism**: Multiple independent inference requests are processed simultaneously on different accelerator units.
 
 ## Co-Processing Mode in AI Accelerators 
 
