@@ -147,9 +147,9 @@ AI Accelerators often work in tandem with the main CPU to offload the heavy comp
 
 ![coprocessor mode](assets/img/inference_2/coprocessor_mode.jpg)
 
-## Emerging Trends in AI Accelerators [3]
+## Emerging Trends in AI Accelerators
 
-As AI workloads continue to grow in complexity and scale, AI accelerators are evolving to meet the demands of modern applications. Some key trends shaping the future of AI accelerators include:
+As AI workloads continue to grow in complexity and scale, AI accelerators are evolving to meet the demands of modern applications [3]. Some key trends shaping the future of AI accelerators include:
 
 ### Intelligent Processing Units (IPUs)
 Developed by Graphcore, IPUs are designed to handle complex machine learning tasks with high efficiency. Their architecture focuses on parallel processing, making them suitable for large-scale AI workloads.
