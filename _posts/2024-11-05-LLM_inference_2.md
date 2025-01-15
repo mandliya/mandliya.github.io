@@ -11,8 +11,8 @@ math: true
 
 **Posts in this series**:
 1. [Primer on Large Language Model (LLM) Inference Optimizations: 1. Background and Problem Formulation](https://mandliya.github.io/posts/LLM_inference_1/) 
-2. **[Primer on Large Language Model (LLM) Inference Optimizations: 2. Introduction to Artificial Intelligence (AI) Accelerators](https://mandliya.github.io/posts/LLM_inference_2/)** (this post)
-
+2. **Primer on Large Language Model (LLM) Inference Optimizations: 2. Introduction to Artificial Intelligence (AI) Accelerator** (this post)
+3. [Primer on Large Language Model (LLM) Inference Optimizations: 3. Model Architecture Optimizations](https://mandliya.github.io/posts/model_architecture_optimizations/)
 
 In the previous [post](https://mandliya.github.io/posts/LLM_inference_1/), we discussed the challenges of Large Language Model (LLM) inference, such as high latency, intensive resource consumption, and scalability issues. Addressing these issues effectively often requires the right hardware support. This post delves into AI accelerators—specialized hardware designed to enhance the performance of AI workloads, including LLM inference—highlighting their architecture, key types, and impact on deploying LLMs at scale. 
 
