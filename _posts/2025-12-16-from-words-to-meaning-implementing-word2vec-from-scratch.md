@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'From Words to Meaning: Implementing Word2Vec from Scratch'
-date: '2025-12-18 06:41:29 '
+date: '2025-12-17 06:41:29 '
 categories:
 - Technology
 tags:
