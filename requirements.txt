@@ -1,3 +1,4 @@
 nbformat>=5.7.0
 nbconvert>=7.0.0
 PyYAML>=6.0
+nltk>=3.7.0
