@@ -3,8 +3,8 @@ layout: post
 title: "Primer on Large Language Model (LLM) Inference Optimizations: 2. Introduction to Artificial Intelligence (AI) Accelerators"
 date: 2024-11-05 22:50:55 -0800
 image: "assets/img/inference_2/cover.png"
-categories: [Large Language Model, Inference Optimization, AI Accelerators]
-tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, AI Accelerators, GPUs, TPUs, FPGAs, ASICs, Parallel Processing, Data Parallelism, Model Parallelism, Task Parallelism, Co-Processing Mode, Intelligent Processing Units, Reconfigurable Dataflow Units, Neural Processing Units]
+categories: [Large Language Model, Inference Optimization, AI Accelerators, Natural Language Processing]
+tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, AI Accelerators, GPUs, TPUs, FPGAs, ASICs, Parallel Processing, Data Parallelism, Model Parallelism, Task Parallelism, Co-Processing Mode, Intelligent Processing Units, Reconfigurable Dataflow Units, Neural Processing Units, Large Language Models, LLMs, Transformers, Natural Language Processing, NLP]
 description: "Exploration of AI accelerators and their impact on deploying Large Language Models (LLMs) at scale."
 math: true
 ---
@@ -45,16 +45,16 @@ The distinct architectures of CPUs and AI accelerators make them suited for diff
 - **Energy Efficiency**: Designed for high-intensity AI tasks, accelerators consume significantly less power per operation than CPUs, contributing to both cost savings and lower environmental impact when deployed at scale.
 
 
-| Feature | CPU | AI Accelerator |
-|---------|-----|----------------|
-| Architecture | General-purpose processor | Specialized hardware optimized for AI workloads |
-| Cores | Few (4-8) | Thousands |
-| Clock Speed | 2-4 GHz | 1-2 GHz |
-| Parallel Processing | Limited | High |
-| Memory | Large cache | High bandwidth memory |
-| Precision | High precision arithmetic | Low precision arithmetic |
-| Libraries | General-purpose | optimized for AI frameworks|
-| Energy Efficiency | Less efficient | More efficient |
+| Feature             | CPU                       | AI Accelerator                                  |
+| ------------------- | ------------------------- | ----------------------------------------------- |
+| Architecture        | General-purpose processor | Specialized hardware optimized for AI workloads |
+| Cores               | Few (4-8)                 | Thousands                                       |
+| Clock Speed         | 2-4 GHz                   | 1-2 GHz                                         |
+| Parallel Processing | Limited                   | High                                            |
+| Memory              | Large cache               | High bandwidth memory                           |
+| Precision           | High precision arithmetic | Low precision arithmetic                        |
+| Libraries           | General-purpose           | optimized for AI frameworks                     |
+| Energy Efficiency   | Less efficient            | More efficient                                  |
 
 
 ![A diagram comparing CPU and GPU architectures, highlighting differences in core count and parallel processing capabilities.](assets/img/inference_2/cpu_vs_gpu.png)

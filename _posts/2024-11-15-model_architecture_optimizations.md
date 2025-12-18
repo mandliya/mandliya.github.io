@@ -1,8 +1,8 @@
 ---
 title: "Primer on Large Language Model (LLM) Inference Optimizations: 3. Model Architecture Optimizations"
 date: 2024-11-15 1:30:48 -0700
-categories: [Large Language Model, Inference Optimization]
-tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, K-V Caching, Memory Calculation, Optimization Metrics, Optimization Techniques, Mixture of Experts, Group Query Attention, GQA, MoE, AI Accelerators, Hardware Acceleration, Model Architecture Optimizations]
+categories: [Large Language Model, Inference Optimization, Natural Language Processing]
+tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, K-V Caching, Memory Calculation, Optimization Metrics, Optimization Techniques, Mixture of Experts, Group Query Attention, GQA, MoE, AI Accelerators, Hardware Acceleration, Model Architecture Optimizations, Natural Language Processing, NLP, Large Language Models, LLMs, Transformers]
 description: "Exploring model architecture optimizations for Large Language Model (LLM) inference, focusing on Group Query Attention (GQA) and Mixture of Experts (MoE) techniques."
 image: "assets/img/inference_3/ai_gen.png"
 math: true

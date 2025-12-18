@@ -1,8 +1,8 @@
 ---
 title: "Primer on Large Language Model (LLM) Inference Optimizations: 1. Background and Problem Formulation"
 date: 2024-10-31 13:43:48 -0700
-categories: [Large Language Model, Inference Optimization]
-tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, K-V Caching, Memory Calculation, Optimization Metrics, Optimization Techniques]
+categories: [Large Language Model, Inference Optimization, Natural Language Processing]
+tags: [LLM, Inference Optimization, Transformer, Attention Mechanism, Multi-Head Attention, K-V Caching, Memory Calculation, Optimization Metrics, Optimization Techniques, Natural Language Processing, NLP, Large Language Models, LLMs, Transformers]
 description: "Overview of Large Language Model (LLM) inference, its importance, challenges, and key problem formulations."
 image: "assets/img/inference_1/ai_gen.png"
 math: true

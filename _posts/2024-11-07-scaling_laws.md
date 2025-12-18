@@ -2,8 +2,8 @@
 layout: post
 title: "Scaling Laws in Large Language Models"
 date: 2024-11-07 00:46:13 -0800
-categories: [Large Language Model, Emegent Capabilities]
-tags: [LLM, Scaling Laws, Emergent Capabilities, Transformers]
+categories: [Large Language Model, Emegent Capabilities, Natural Language Processing]
+tags: [LLM, Scaling Laws, Emergent Capabilities, Transformers, Natural Language Processing, NLP, Large Language Models, LLMs, Transformers]
 description: "Scaling laws in AI offer a quantitative framework for understanding the relationship between model size, data, and compute resources. Learn about the Chinchilla scaling law, power laws, and the future of large models."
 image: assets/img/scaling_laws/scaling.png
 math: true

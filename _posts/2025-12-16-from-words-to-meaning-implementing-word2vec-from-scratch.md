@@ -3,10 +3,8 @@ layout: post
 title: 'From Words to Meaning: Implementing Word2Vec from Scratch'
 date: '2025-12-17 06:41:29 '
 categories:
-- Technology
-tags:
-- Jupyter
-- Notebook
+- Natural Language Processing
+tags: [Word Embeddings, Word2Vec, Embeddings, Embedding Models, Natural Language Processing, NLP, Large Language Models, Deep Learning, Neural Networks]
 description: 'Word embeddings are one of the most transformative developments in Natural
   Language Processing (NLP). They solve a fundamental problem: how can we rep...'
 image: /assets/img/from-words-to-meaning-implementing-word2vec-from-scratch/cover.png
