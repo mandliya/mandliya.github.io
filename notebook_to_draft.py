@@ -19,6 +19,7 @@ import shutil
 import subprocess
 import tempfile
 import urllib.request
+import base64
 from datetime import datetime
 from pathlib import Path
 import argparse
@@ -282,15 +283,146 @@ class NotebookToDraftConverter:
 
         return "A Jupyter notebook converted to a blog post."
 
-    def process_images(self, content: str, notebook_name: str, notebook_dir: Path, temp_dir: Optional[Path] = None) -> str:
+    def extract_and_save_output_images(self, resources: Dict, notebook_name: str) -> Dict[str, str]:
+        """
+        Extract images from nbconvert resources and save them to assets directory.
+        
+        Args:
+            resources: Resources dictionary from nbconvert containing 'outputs' key
+            notebook_name: Name of the notebook (used for directory structure)
+            
+        Returns:
+            Dictionary mapping original image paths to new asset paths
+        """
+        notebook_img_dir = self.img_dir / notebook_name
+        notebook_img_dir.mkdir(exist_ok=True)
+        
+        image_mapping = {}
+        
+        # nbconvert stores images in resources['outputs']
+        if 'outputs' not in resources:
+            return image_mapping
+            
+        outputs = resources['outputs']
+        
+        for image_name, image_data in outputs.items():
+            # image_name is like "output_1.png", "output_2.png", etc.
+            # image_data is the base64-encoded image data or binary data
+            
+            try:
+                # Determine file extension from name or default to png
+                if '.' in image_name:
+                    ext = image_name.split('.')[-1]
+                else:
+                    ext = 'png'
+                    
+                # Create a more descriptive filename (you can customize this)
+                # For now, keep the original name but ensure it's in assets
+                new_image_path = notebook_img_dir / image_name
+                
+                # Write the image data
+                if isinstance(image_data, str):
+                    # Base64 encoded data
+                    if image_data.startswith('data:'):
+                        # Data URI format: data:image/png;base64,...
+                        header, encoded = image_data.split(',', 1)
+                        image_bytes = base64.b64decode(encoded)
+                    else:
+                        # Just base64 string
+                        image_bytes = base64.b64decode(image_data)
+                else:
+                    # Binary data
+                    image_bytes = image_data
+                
+                with open(new_image_path, 'wb') as f:
+                    f.write(image_bytes)
+                
+                # Map original path to new path
+                image_mapping[image_name] = f'/assets/img/{notebook_name}/{image_name}'
+                print(f"✅ Extracted and saved cell output image: {image_name} -> /assets/img/{notebook_name}/")
+                
+            except Exception as e:
+                print(f"⚠️  Warning: Could not save image {image_name}: {e}")
+                continue
+        
+        return image_mapping
+
+    def extract_base64_images(self, content: str, notebook_name: str) -> Tuple[str, Dict[str, str]]:
+        """
+        Extract base64 data URI images from markdown and save them as files.
+        
+        Args:
+            content: Markdown content that may contain base64 data URIs
+            notebook_name: Name of the notebook (for directory structure)
+            
+        Returns:
+            Tuple of (updated_content, image_mapping_dict)
+        """
+        notebook_img_dir = self.img_dir / notebook_name
+        notebook_img_dir.mkdir(exist_ok=True)
+        
+        image_mapping = {}
+        image_counter = 0
+        
+        # Pattern to match base64 data URIs in image tags
+        # Matches: ![alt](data:image/png;base64,...)
+        data_uri_pattern = r'!\[([^\]]*)\]\(data:image/([^;]+);base64,([^)]+)\)'
+        
+        def replace_data_uri(match):
+            nonlocal image_counter
+            alt_text = match.group(1)
+            image_format = match.group(2)  # png, jpeg, svg, etc.
+            base64_data = match.group(3)
+            
+            try:
+                # Decode base64 data
+                image_bytes = base64.b64decode(base64_data)
+                
+                # Generate filename
+                image_counter += 1
+                image_filename = f"output_{image_counter}.{image_format}"
+                image_path = notebook_img_dir / image_filename
+                
+                # Save the image
+                with open(image_path, 'wb') as f:
+                    f.write(image_bytes)
+                
+                # Create the new markdown reference
+                new_path = f'/assets/img/{notebook_name}/{image_filename}'
+                image_mapping[image_filename] = new_path
+                print(f"✅ Extracted base64 image: {image_filename} -> /assets/img/{notebook_name}/")
+                
+                return f'![{alt_text}]({new_path})'
+                
+            except Exception as e:
+                print(f"⚠️  Warning: Could not extract base64 image: {e}")
+                return match.group(0)  # Return original if extraction fails
+        
+        # Replace all base64 data URIs
+        content = re.sub(data_uri_pattern, replace_data_uri, content)
+        
+        return content, image_mapping
+
+    def process_images(self, content: str, notebook_name: str, notebook_dir: Path, 
+                      temp_dir: Optional[Path] = None, image_mapping: Optional[Dict[str, str]] = None) -> str:
         """
         Process and move images to the assets directory.
 
-        Expected image structure in repositories:
-        - Images should be in an 'images/' directory relative to the notebook
-        - Use markdown syntax: ![alt text](images/filename.png)
-        - Generated cell output images (output_*.png) will be skipped with a note
+        Args:
+            content: Markdown content with image references
+            notebook_name: Name of the notebook (for directory structure)
+            notebook_dir: Directory containing the notebook
+            temp_dir: Temporary directory for remote repositories
+            image_mapping: Dictionary mapping original image paths to new asset paths (from nbconvert outputs)
         """
+        # First, extract any base64 data URI images embedded in the markdown
+        content, base64_mapping = self.extract_base64_images(content, notebook_name)
+        
+        # Merge with provided image_mapping
+        if image_mapping is None:
+            image_mapping = {}
+        image_mapping.update(base64_mapping)
+        
         # Create a subdirectory for this notebook's images
         notebook_img_dir = self.img_dir / notebook_name
         notebook_img_dir.mkdir(exist_ok=True)
@@ -302,13 +434,16 @@ class NotebookToDraftConverter:
             # Handle external URLs - keep as is
             if image_path.startswith('http'):
                 return match.group(0)
+            
+            # Skip data URIs (already processed by extract_base64_images)
+            if image_path.startswith('data:'):
+                return match.group(0)
 
-            # Skip generated cell output images with informative message
-            if image_path.startswith('output_') and (image_path.endswith('.png') or image_path.endswith('.svg')):
-                print(f"Info: Skipping generated cell output image: {image_path}")
-                print("      (Cell output images are generated when notebook is executed)")
-                # Remove the image reference since it won't render
-                return f"*[Generated plot output - run notebook to see visualization]*"
+            # Check if this is an output image that we've already extracted
+            image_filename = Path(image_path).name
+            if image_filename in image_mapping:
+                new_path = image_mapping[image_filename]
+                return f'![{alt_text}]({new_path})'
 
             # Handle local images - expect them to be in images/ directory
             if image_path.startswith('./'):
@@ -359,8 +494,12 @@ class NotebookToDraftConverter:
 
         return content
 
-    def convert_notebook_to_markdown(self, notebook_path: Path) -> str:
-        """Convert notebook to markdown using nbconvert."""
+    def convert_notebook_to_markdown(self, notebook_path: Path) -> Tuple[str, Dict]:
+        """Convert notebook to markdown using nbconvert.
+        
+        Returns:
+            Tuple of (markdown_body, resources_dict) where resources contains extracted images
+        """
         try:
             # Load the notebook
             with open(notebook_path, 'r', encoding='utf-8') as f:
@@ -374,11 +513,11 @@ class NotebookToDraftConverter:
             # Convert to markdown
             (body, resources) = md_exporter.from_notebook_node(nb)
 
-            return body
+            return body, resources
 
         except Exception as e:
             print(f"Error converting notebook: {e}")
-            return ""
+            return "", {}
 
     def generate_front_matter(self, title: str, categories: List[str], tags: List[str],
                             description: str, notebook_name: str) -> str:
@@ -421,16 +560,19 @@ class NotebookToDraftConverter:
                 slug = self.generate_slug(title)
 
             # Convert notebook to markdown
-            content = self.convert_notebook_to_markdown(notebook_path)
+            content, resources = self.convert_notebook_to_markdown(notebook_path)
             if not content:
                 raise ValueError("Failed to convert notebook to markdown")
 
             # Generate description
             description = self.generate_description(content)
 
-            # Process images (pass temp_dir for remote repositories)
+            # Extract images from cell outputs (nbconvert resources)
             notebook_name = slug
-            content = self.process_images(content, notebook_name, notebook_dir, temp_dir)
+            image_mapping = self.extract_and_save_output_images(resources, notebook_name)
+            
+            # Process images (pass temp_dir for remote repositories and image_mapping for output images)
+            content = self.process_images(content, notebook_name, notebook_dir, temp_dir, image_mapping)
 
             # Generate front matter
             front_matter = self.generate_front_matter(title, categories, tags, description, notebook_name)
