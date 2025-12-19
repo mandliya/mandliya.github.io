@@ -1,10 +1,14 @@
 ---
 layout: post
 title: 'Visualizing Attention: See what an LLM sees.'
-date: '2025-12-18 18:55:09 '
-categories: [Natural Language Processing, NLP, Large Language Models, LLMs, Transformers]
-tags: [Attention, Transformers, Large Language Models, LLMs, Transformers, Natural Language Processing, NLP]
-description: 'This post explains and visualizes the attention mechanism in transformer models. Using DistilBERT, it shows how attention connects related tokens (e.g., "Paris" → "French") through heatmaps, explains the Query-Key-Value framework and the attention formula, and demonstrates how different attention heads specialize in syntax, semantics, and other patterns. The post includes code to extract and visualize attention weights, making the inner workings of transformers more interpretable.'
+date: '2025-12-19 05:54:32 '
+categories:
+- Technology
+tags:
+- Jupyter
+- Notebook
+description: 'In this post, we are going to understand and visualize how attention
+  works in a transformer model. We will see:'
 image: /assets/img/visualizing-attention-see-what-an-llm-sees/cover.png
 image_alt: 'Visualizing Attention: See what an LLM sees.'
 math: true
