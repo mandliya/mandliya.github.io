@@ -2,13 +2,10 @@
 layout: post
 title: 'Visualizing Attention: See what an LLM sees.'
 date: '2025-12-19 05:54:32 '
-categories:
-- Technology
-tags:
-- Jupyter
-- Notebook
-description: 'In this post, we are going to understand and visualize how attention
-  works in a transformer model. We will see:'
+categories: [Natural Language Processing, NLP, Large Language Models, LLMs, Transformers]
+tags: [Attention, Transformers, Large Language Models, LLMs, Natural Language Processing, NLP]
+
+description: 'Learn how attention mechanisms work in transformers by visualizing what LLMs see when processing text. Discover how attention connects semantically related tokens (like Paris → French), understand the Query-Key-Value framework, and explore how different attention heads specialize in syntax, semantics, and coreference.'
 image: /assets/img/visualizing-attention-see-what-an-llm-sees/cover.png
 image_alt: 'Visualizing Attention: See what an LLM sees.'
 math: true
@@ -17,8 +14,6 @@ pin: false
 toc: true
 comments: true
 ---
-
-# Visualizing Attention: See what an LLM sees.
 
 In this post, we are going to understand and visualize how attention works in a transformer model. We will see:
 
@@ -298,9 +293,8 @@ Attention works exactly like this, each word:
 
 #### 1. Query (Q) : What am I looking for?
 
-$$ 
-Q = \text{token\_embedding} \times W_q
-$$
+$$ Q = \text{token_embedding} \times W_q $$
+
 - `token_embedding`: Base representation of the token from lookup table.
 - $W_q$: Learned projection matrix (turns embeddings into queries).
 
@@ -313,7 +307,7 @@ $$
 
 #### 2. Key (K): "What do I represent?"
 
-$$ K = \text{token\_embedding} \times W_k $$
+$$ K = \text{token_embedding} \times W_k $$
 
 **Example - For "french":**
 - Base embedding: *[language: 0.9, european: 0.7, culture: 0.6, ...]*
@@ -571,26 +565,34 @@ We can hypothesize this head finds **meaningful semantic relationships** between
 
 We can summarize our key learnings:
 
-1. **Attention is a learned lookup mechanism**:  When we see "paris" attending to "french" it was not programmed explicitly. The model **learned** this geographic-linguistic connection from reading millions of sentences during pre-training.
+### Attention is a learned lookup mechanism
+  When we see "paris" attending to "french" it was not programmed explicitly. The model **learned** this geographic-linguistic connection from reading millions of sentences during pre-training.
 
-2. **The Attention Mechanism (Q, K, V)**
+  **The Attention Mechanism (Q, K, V)**
 
-Attention computes three things for each token:
-- **Query (Q):** "What am I looking for?"
-- **Key (K):** "What do I represent?"
-- **Value (V):** "What information do I carry?"
+- Attention computes three things for each token:
+  - **Query (Q):** "What am I looking for?"
+  - **Key (K):** "What do I represent?"
+  - **Value (V):** "What information do I carry?"
 
-**The formula:** Attention(Q,K,V) = softmax(Q·K^T/√d_k)·V
+- **The formula:** 
 
-**In practice:**
-- Q·K^T: Compare queries to keys (compatibility scores)
-- Scaling: Prevent softmax saturation
-- Softmax: Convert to probabilities
-- ·V: Weighted sum of values
+  $$ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V $$
 
 
-3. **Multi-Head Attention = Multiple Specialists**: We saw how different heads learn completely different concepts and bring different perspectives on the same token connections.
+  We saw how the formula works and how it is used to compute the attention matrix.
 
-4. **Heads are multi-talented**: Attention heads are not rigidly specialized. A semantic head may also learn useful positional patterns and vice versa. Model optimizes for one thing: to **minimize loss**. Heads learn whatever combination of patterns achieves this. This flexibility makes transformers adaptable through fine-tuning!
+- **In practice:**
+  - Q·K^T: Compare queries to keys (compatibility scores)
+  - Scaling: Prevent softmax saturation
+  - Softmax: Convert to probabilities
+  - ·V: Weighted sum of values
+
+
+### Multi-Head Attention = Multiple Specialists
+We saw how different heads learn completely different concepts and bring different perspectives on the same token connections.
+
+### Heads are multi-talented
+Attention heads are not rigidly specialized. A semantic head may also learn useful positional patterns and vice versa. Model optimizes for one thing: to **minimize loss**. Heads learn whatever combination of patterns achieves this. This flexibility makes transformers adaptable through fine-tuning!
 
 

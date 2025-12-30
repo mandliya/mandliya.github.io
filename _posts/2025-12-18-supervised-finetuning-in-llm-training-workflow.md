@@ -4,8 +4,7 @@ title: Supervised Finetuning in LLM training workflow
 date: '2025-12-18 01:53:05 '
 categories: [Natural Language Processing, NLP, Large Language Models, LLMs, Transformers]
 tags: [Supervised Fine-tuning, SFT, LLM, Large Language Models, LLMs, Transformers, Natural Language Processing, NLP]
-description: In this post we are going to explore the concept of Supervised Fine-tuning.
-  When large language models are trained, they are rarely trained in a singl...
+description: 'Learn how supervised fine-tuning (SFT) fits into the LLM training pipeline. This post explains the three-step process (pretraining → SFT → alignment), demonstrates SFT implementation with a practical example, and shows how fine-tuning transforms a base model into a task-specific assistant.'
 image: /assets/img/supervised-finetuning-in-llm-training-workflow/cover.png
 image_alt: Supervised Finetuning in LLM training workflow
 math: true
@@ -14,8 +13,6 @@ pin: false
 toc: true
 comments: true
 ---
-
-# Supervised Finetuning in LLM training workflow
 
 In this post we are going to explore the concept of Supervised Fine-tuning. When chat or instruction following large language models are trained, they are rarely trained in a single monolithic step. Instead, they typically go through **three major steps**
 
