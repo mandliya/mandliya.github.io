@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'Representation Engineering - I: Steering Language Models With Activation Engineering'
-date: '2025-12-18 19:03:00 '
+date: '2025-12-20 19:03:00 '
 categories: [AI Safety, Alignment, Representation Engineering, Activation Engineering, ControlibilityNatural Language Processing, NLP, Large Language Models, LLMs, Transformers]
 tags: [Activation Engineering, Representation Engineering, Alignment, AI Safety, Controlibility, Large Language Models, LLMs, Transformers, Natural Language Processing, NLP, RePE]
 description: 'Implement Activation Addition (ActAdd) and Contrastive Activation Addition (CAA) to steer language models at inference time without training. Learn how adding vectors to the residual stream changes behavior, with practical code implementations and analysis of both methods.'
