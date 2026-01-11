@@ -712,6 +712,7 @@ Schematically (for residual stream $r$):
 $$
 r \leftarrow r + \text{Attn}(\text{LN}(r))
 $$
+
 $$
 r \leftarrow r + \text{MLP}(\text{LN}(r))
 $$
@@ -759,6 +760,7 @@ After processing through 12 transformer blocks, we have rich representations for
 ### The Unembedding Matrix
 
 The unembedding layer is a linear projection from $d_{model} (768)$ to $d_{vocab} (50,257)$. For each position, this gives us logits, a raw scores for each possible next token.
+
 $$
 W_U \in \mathbb{R}^{d_{model} \times d_{vocab}}
 $$
