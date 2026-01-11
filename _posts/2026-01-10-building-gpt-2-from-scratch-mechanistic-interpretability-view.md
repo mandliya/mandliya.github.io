@@ -7,6 +7,11 @@ tags: [LLM, Transformers, Mechanistic Interpretability, Natural Language Process
 description: In this post, we're going to build GPT-2 from the ground up, implementing every component ourselves and understanding exactly how this remarkable architecture works.
 image: /assets/img/building-gpt-2-from-scratch-mechanistic-interpretability-view/cover.png
 image_alt: 'Building GPT-2 From Scratch:  Mechanistic Interpretability View'
+math: true
+mermaid: true
+pin: false
+toc: true
+comments: true
 ---
 
 # Building GPT-2 From Scratch:  Mechanistic Interpretability View
@@ -753,7 +758,8 @@ After processing through 12 transformer blocks, we have rich representations for
 
 ### The Unembedding Matrix
 
-The unembedding layer is a linear projection from $d_{model} (768)$ to $d_{vocab} (50,257)$. For each position, this gives us logits, a raw scores for each possible next token.
+The unembedding layer is a linear projection from $d_{model}$(768) to $d_{vocab}$(50,257). For each position, this gives us logits, a raw scores for each possible next token.
+
 $$
 W_U \in \mathbb{R}^{d_{model} \times d_{vocab}}
 $$
