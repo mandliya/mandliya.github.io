@@ -14,7 +14,6 @@ toc: true
 comments: true
 ---
 
-# Building GPT-2 From Scratch:  Mechanistic Interpretability View
 
 In this post, we're going to build GPT-2 from the ground up fun and learning, implementing every component ourselves and understanding exactly how this remarkable architecture works. This is the first part of a two-part series. Here, we'll focus on understanding and implementing the architecture, loading pre-trained weights, and running inference. **In the next post, we'll train our implementation from scratch** and explore the training dynamics.
 
