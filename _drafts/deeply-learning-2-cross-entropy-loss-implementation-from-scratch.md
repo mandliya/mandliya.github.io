@@ -1,16 +1,16 @@
 ---
 layout: post
-title: 'Deeply Learning 2: Cross Entropy Loss Implementation from scratch'
-date: '2026-02-17 23:15:35 '
+title: 'Deeply Learning 2: Cross Entropy Loss Implementation from Scratch'
+date: '2026-02-18 07:41:29 '
 categories:
 - Technology
 tags:
 - Jupyter
 - Notebook
-description: Deeply learning one concept at a time. In this post, we implement cross
-  entropy loss from scratch.
+description: Deeply learning one concept at a time. In this post, we will implement
+  cross entropy loss from scratch.
 image: /assets/img/deeply-learning-2-cross-entropy-loss-implementation-from-scratch/cover.png
-image_alt: 'Deeply Learning 2: Cross Entropy Loss Implementation from scratch'
+image_alt: 'Deeply Learning 2: Cross Entropy Loss Implementation from Scratch'
 math: true
 mermaid: true
 pin: false
@@ -18,17 +18,19 @@ toc: true
 comments: true
 ---
 
-# Deeply Learning 2: Cross Entropy Loss Implementation from scratch
-Deeply learning one concept at a time. In this post, we implement cross entropy loss from scratch.
+# Deeply Learning 2: Cross Entropy Loss Implementation from Scratch
+Deeply learning one concept at a time. In this post, we will implement cross entropy loss from scratch.
 
 ## Introduction
 Cross entropy loss is one of the most commonly used loss functions in classification problems. It measures the difference between two probability distributions: the true distribution (from the ground truth labels) and the predicted distribution (from the model's output).
 
 ## The Core Idea
 The cross entropy loss for a single sample can be defined as:
+
 $$
 L = -\sum_{i=1}^{C} y_i \log(p_i)
 $$
+
 Where:
 - $C$ is the number of classes.
 - $y_i$ is the true label for class $i$ (1 if the sample belongs to class $i$, otherwise 0).
