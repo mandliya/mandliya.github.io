@@ -4,8 +4,7 @@ title: 'Deeply Learning 2: Cross Entropy Loss Implementation from scratch'
 date: '2026-02-17 23:15:35 '
 categories: [Deeply Learning, Neural Networks]
 tags: [Deep Learning, Cross Entropy, PyTorch, Loss Functions, Neural Networks]
-description: Deeply learning one concept at a time. In this post, we implement cross
-  entropy loss from scratch.
+description: Deeply learning one concept at a time. In this post, we implement cross entropy loss from scratch.
 image: /assets/img/deeply-learning-2-cross-entropy-loss-implementation-from-scratch/cover.png
 image_alt: 'Deeply Learning 2: Cross Entropy Loss Implementation from scratch'
 math: true
