@@ -49,7 +49,29 @@ class NotebookToDraftConverter:
 
     def is_git_repo(self, path: str) -> bool:
         """Check if the path contains a git repository reference."""
-        return '::' in path or path.count('/') >= 2 and not path.startswith('/')
+        if '::' in path:
+            return True
+
+        # username/repo shorthand
+        if re.match(r'^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$', path):
+            return True
+
+        # Full GitHub repository URL (not a specific file/blob URL)
+        if path.startswith('https://github.com/'):
+            return '/blob/' not in path and path.endswith('.ipynb') is False
+
+        return False
+
+    def is_probably_local_path(self, path: str) -> bool:
+        """Heuristics for identifying local file paths, even if missing."""
+        expanded = Path(path).expanduser()
+        if expanded.exists():
+            return True
+
+        return (
+            path.startswith(('./', '../', '/', '~'))
+            or path.endswith('.ipynb')
+        )
 
     def download_from_url(self, url: str, temp_dir: Path) -> Path:
         """Download a notebook from a URL."""
@@ -163,24 +185,32 @@ class NotebookToDraftConverter:
         Returns:
             Tuple of (notebook_path, temp_dir) where temp_dir is None for local files
         """
+        notebook_input = notebook_input.strip()
+        local_candidate = Path(notebook_input).expanduser()
+
+        # Prefer real local paths first.
+        if local_candidate.exists():
+            return local_candidate.resolve(), None
+
         if self.is_url(notebook_input):
             # Direct URL download
             temp_dir = Path(tempfile.mkdtemp())
             notebook_path = self.download_from_url(notebook_input, temp_dir)
             return notebook_path, temp_dir
 
-        elif self.is_git_repo(notebook_input):
+        if self.is_git_repo(notebook_input):
             # Repository reference
             temp_dir = Path(tempfile.mkdtemp())
             notebook_path = self.clone_and_extract(notebook_input, temp_dir)
             return notebook_path, temp_dir
 
-        else:
-            # Local file path
-            notebook_path = Path(notebook_input)
-            if not notebook_path.exists():
-                raise FileNotFoundError(f"Notebook not found: {notebook_path}")
-            return notebook_path, None
+        if self.is_probably_local_path(notebook_input):
+            raise FileNotFoundError(f"Notebook not found: {local_candidate}")
+
+        raise ValueError(
+            f"Unsupported notebook input format: {notebook_input}. "
+            "Use a local .ipynb path, a URL, or username/repo syntax."
+        )
 
     def extract_title_from_notebook(self, notebook_path: Path) -> str:
         """Extract title from notebook metadata or first markdown cell."""
@@ -214,6 +244,40 @@ class NotebookToDraftConverter:
         slug = re.sub(r'[^\w\s-]', '', title.lower())
         slug = re.sub(r'[-\s]+', '-', slug)
         return slug.strip('-')
+
+    def normalize_text(self, text: str) -> str:
+        """Normalize text for robust comparisons."""
+        text = text.strip().lower()
+        text = re.sub(r'[^\w\s-]', '', text)
+        text = re.sub(r'[-\s]+', ' ', text)
+        return text.strip()
+
+    def strip_duplicate_title_heading(self, content: str, title: str) -> str:
+        """
+        Remove a leading H1 heading when it duplicates front matter title.
+        """
+        lines = content.splitlines()
+
+        idx = 0
+        while idx < len(lines) and not lines[idx].strip():
+            idx += 1
+
+        if idx >= len(lines):
+            return content
+
+        match = re.match(r'^#\s+(.+?)\s*$', lines[idx].strip())
+        if not match:
+            return content
+
+        heading_title = match.group(1)
+        if self.normalize_text(heading_title) != self.normalize_text(title):
+            return content
+
+        del lines[idx]
+        if idx < len(lines) and not lines[idx].strip():
+            del lines[idx]
+
+        return '\n'.join(lines)
 
     def extract_categories_and_tags(self, notebook_path: Path) -> Tuple[List[str], List[str]]:
         """Extract categories and tags from notebook metadata or content."""
@@ -558,6 +622,8 @@ class NotebookToDraftConverter:
                 slug = self.generate_slug(output_name)
             else:
                 slug = self.generate_slug(title)
+            if not slug:
+                raise ValueError("Generated slug is empty. Provide --output with a valid name.")
 
             # Convert notebook to markdown
             content, resources = self.convert_notebook_to_markdown(notebook_path)
@@ -573,12 +639,15 @@ class NotebookToDraftConverter:
             
             # Process images (pass temp_dir for remote repositories and image_mapping for output images)
             content = self.process_images(content, notebook_name, notebook_dir, temp_dir, image_mapping)
+            content = self.strip_duplicate_title_heading(content, title)
 
             # Generate front matter
             front_matter = self.generate_front_matter(title, categories, tags, description, notebook_name)
 
             # Create the draft file
             draft_path = self.drafts_dir / f"{slug}.md"
+            if draft_path.exists():
+                raise FileExistsError(f"Draft already exists: {draft_path}")
 
             with open(draft_path, 'w', encoding='utf-8') as f:
                 f.write("---\n")

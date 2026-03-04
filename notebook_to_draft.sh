@@ -1,9 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Notebook to Draft Converter Script
 # Usage: ./notebook_to_draft.sh <notebook_path_or_repo_or_url> [output_name]
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PY_SCRIPT="${SCRIPT_DIR}/notebook_to_draft.py"
+REQ_FILE="${SCRIPT_DIR}/requirements.txt"
 
 # Colors for output
 RED='\033[0;31m'
@@ -66,8 +70,8 @@ if [[ "$1" == "-h" || "$1" == "--help" || $# -eq 0 ]]; then
 fi
 
 # Check if Python script exists
-if [ ! -f "notebook_to_draft.py" ]; then
-    print_error "notebook_to_draft.py not found in current directory"
+if [ ! -f "$PY_SCRIPT" ]; then
+    print_error "notebook_to_draft.py not found next to this script ($PY_SCRIPT)"
     exit 1
 fi
 
@@ -99,10 +103,10 @@ fi
 print_info "Checking dependencies..."
 if ! python3 -c "import nbformat, nbconvert, yaml" 2>/dev/null; then
     print_warning "Required Python packages not found. Installing..."
-    if [ -f "requirements.txt" ]; then
-        pip3 install -r requirements.txt
+    if [ -f "$REQ_FILE" ]; then
+        python3 -m pip install -r "$REQ_FILE"
     else
-        pip3 install nbformat nbconvert PyYAML
+        python3 -m pip install nbformat nbconvert PyYAML
     fi
 fi
 
@@ -119,9 +123,9 @@ print_info "Converting notebook..."
 
 # Run the Python script
 if [ -n "$OUTPUT_NAME" ]; then
-    python3 notebook_to_draft.py "$NOTEBOOK_SOURCE" --output "$OUTPUT_NAME"
+    python3 "$PY_SCRIPT" "$NOTEBOOK_SOURCE" --output "$OUTPUT_NAME" --blog-root "$SCRIPT_DIR"
 else
-    python3 notebook_to_draft.py "$NOTEBOOK_SOURCE"
+    python3 "$PY_SCRIPT" "$NOTEBOOK_SOURCE" --blog-root "$SCRIPT_DIR"
 fi
 
 print_success "Conversion completed!"

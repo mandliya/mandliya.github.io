@@ -14,8 +14,6 @@ toc: true
 comments: true
 ---
 
-# Deeply Learning 3: Mean Squared Error Loss Implementation from Scratch
-
 Deeply learning one concept at a time. In this post, we will implement mean squared error loss from scratch.
 
 ## Introduction

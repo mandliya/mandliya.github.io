@@ -2,7 +2,25 @@
 
 source "https://rubygems.org"
 
-gem "jekyll-theme-chirpy", "~> 7.1", ">= 7.1.1"
+gem "jekyll", "~> 4.4"
+
+group :jekyll_plugins do
+  gem "jekyll-archives-v2"
+  gem "jekyll-cache-bust"
+  gem "jekyll-email-protect"
+  gem "jekyll-feed"
+  gem "jekyll-link-attributes"
+  gem "jekyll-paginate-v2"
+  gem "jekyll-regex-replace"
+  gem "jekyll-scholar"
+  gem "jekyll-socials"
+  gem "jekyll-sitemap"
+  gem "jekyll-toc"
+  gem "jemoji"
+end
+
+gem "kramdown-parser-gfm"
+gem "webrick", "~> 1.8"
 
 gem "html-proofer", "~> 5.0", group: :test
 

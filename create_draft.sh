@@ -1,35 +1,67 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Usage: ./create_new_draft.sh
-# This script creates a new draft file in the _drafts folder with placeholders for initial metadata.
+set -euo pipefail
 
-# Prompt for the title to generate a short slug
-read -p "Enter the title: " title
+usage() {
+  cat <<'EOF'
+Usage: ./create_draft.sh [title]
 
-# Convert title to a slug (lowercase, hyphens instead of spaces)
-slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '-' | tr -cd '[:alnum:]-')
+Creates a new draft in _drafts using the provided title.
+If title is omitted, you'll be prompted for it.
+EOF
+}
 
-# Set the filename as the slug in _drafts
-filename="_drafts/$slug.md"
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
 
-# Get today's date in the preferred format
-today=$(date +"%Y-%m-%d %H:%M:%S %z")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DRAFTS_DIR="${SCRIPT_DIR}/_drafts"
 
-# Create the draft file with metadata placeholders
-echo "---" > "$filename"
-echo "title: \"$title\"" >> "$filename"
-echo "date: $today" >> "$filename"  # Default to today's date
-echo "categories: [Category1, Category2]" >> "$filename"  # Placeholder categories
-echo "tags: [Tag1, Tag2]" >> "$filename"                  # Placeholder tags
-echo "description: \"Add a brief description here\"" >> "$filename"
-echo "image: /assets/img/sample.jpg" >> "$filename"       # Placeholder image path
-echo "image_alt: \"$title\"" >> "$filename"
-echo "math: true" >> "$filename"
-echo "mermaid: true" >> "$filename"
-echo "pin: false" >> "$filename"
-echo "---" >> "$filename"
-echo "" >> "$filename"
-echo "Write your content here." >> "$filename"
+title="${*:-}"
+if [[ -z "$title" ]]; then
+  read -r -p "Enter the title: " title
+fi
 
-# Add a message for the user
-echo "Draft created at $filename with today's date. You can now edit the file to fill in the details."
+title="$(echo "$title" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+if [[ -z "$title" ]]; then
+  echo "Error: title cannot be empty."
+  exit 1
+fi
+
+slug="$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//')"
+if [[ -z "$slug" ]]; then
+  echo "Error: could not generate a valid slug from title '$title'."
+  exit 1
+fi
+
+mkdir -p "$DRAFTS_DIR"
+filename="${DRAFTS_DIR}/${slug}.md"
+
+if [[ -f "$filename" ]]; then
+  echo "Error: draft already exists: $filename"
+  exit 1
+fi
+
+today="$(date +"%Y-%m-%d %H:%M:%S %z")"
+
+cat > "$filename" <<EOF
+---
+layout: post
+title: "$title"
+date: $today
+categories: [Category1, Category2]
+tags: [Tag1, Tag2]
+description: "Add a brief description here"
+image: /assets/img/sample.jpg
+image_alt: "$title"
+math: true
+mermaid: true
+pin: false
+---
+
+Write your content here.
+EOF
+
+echo "Draft created: $filename"

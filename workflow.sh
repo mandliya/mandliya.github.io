@@ -1,144 +1,91 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Define paths
-VENV_PATH="$HOME/.pyenv/versions/3.11.7/envs/blog"
-BLOG_REPO_PATH="$HOME/p/blog/mandliya.github.io"
-NOTEBOOKS_PATH="$BLOG_REPO_PATH/_notebooks"
-DRAFTS_PATH="$BLOG_REPO_PATH/_drafts"
-POSTS_PATH="$BLOG_REPO_PATH/_posts"
+set -euo pipefail
 
-# Function to activate the virtual environment
-activate_venv() {
-    if [ -d "$VENV_PATH" ]; then
-        source "$VENV_PATH/bin/activate"
-        echo "Virtual environment 'blog' activated."
-    else
-        echo "Error: Virtual environment at $VENV_PATH not found."
-        exit 1
-    fi
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NOTEBOOKS_PATH="${SCRIPT_DIR}/_notebooks"
+DRAFTS_PATH="${SCRIPT_DIR}/_drafts"
+POSTS_PATH="${SCRIPT_DIR}/_posts"
 
-# Function to deactivate the virtual environment
-deactivate_venv() {
-    deactivate
-    echo "Virtual environment deactivated."
-}
+usage() {
+  cat <<'EOF'
+Usage: ./workflow.sh {new|convert|review|publish} [args]
 
-# Function to ensure required directories exist
-ensure_directories() {
-    for dir in "$NOTEBOOKS_PATH" "$DRAFTS_PATH" "$POSTS_PATH"; do
-        if [ ! -d "$dir" ]; then
-            mkdir -p "$dir"
-            echo "Created directory: $dir"
-        fi
-    done
-}
-
-# Function to create a new Jupyter notebook
-create_notebook() {
-    echo "Opening Jupyter Notebook..."
-    cd "$NOTEBOOKS_PATH" || exit
-    jupyter lab
-}
-
-# Function to convert notebook to Markdown
-convert_notebook() {
-    local title="$1"
-    local notebook_file="$NOTEBOOKS_PATH/${title}.ipynb"
-    local markdown_file="$NOTEBOOKS_PATH/${title}.md"
-
-    # Check if the notebook file exists
-    if [ ! -f "$notebook_file" ]; then
-        echo "Error: Notebook '$title.ipynb' not found in the notebooks folder ('$notebook_file')."
-        exit 1
-    fi
-
-    # Convert notebook to Markdown
-    jupyter nbconvert --to markdown "$notebook_file" --output "$markdown_file"
-    echo "Notebook converted to Markdown: $markdown_file"
-}
-
-# Function to add front matter and move to drafts
-add_frontmatter() {
-    local title="$1"
-    local draft_file="$DRAFTS_PATH/${title}.md"
-    local markdown_file="$NOTEBOOKS_PATH/${title}.md"
-    local date=$(date +"%Y-%m-%d %H:%M:%S %z")
-
-    # Check if Markdown file exists
-    if [ ! -f "$markdown_file" ]; then
-        echo "Error: Markdown file for notebook '$title' not found."
-        exit 1
-    fi
-
-    # Add front matter to the Markdown file
-    cat <<EOF > temp.md
----
-layout: post
-title: "$title"
-date: $date
-categories: [Learning, Notes]
-tags: [Jupyter, Draft]
-math: true
----
+Commands:
+  new [name]                    Open Jupyter Lab in _notebooks (optionally with <name>.ipynb)
+  convert <source> [output]     Convert notebook source to a draft
+  review                         Start Jekyll server with drafts
+  publish <draft_slug_or_file>  Publish a draft into _posts
 EOF
-
-    # Append the notebook content to the front matter and move to drafts
-    cat "$markdown_file" >> temp.md
-    mv temp.md "$draft_file"
-    echo "Draft created at $draft_file"
 }
 
-# Function to review the draft locally with Jekyll
+ensure_directories() {
+  mkdir -p "$NOTEBOOKS_PATH" "$DRAFTS_PATH" "$POSTS_PATH"
+}
+
+create_notebook() {
+  local notebook_name="${1:-}"
+  if ! command -v jupyter >/dev/null 2>&1; then
+    echo "Error: jupyter is not installed or not on PATH."
+    exit 1
+  fi
+
+  cd "$NOTEBOOKS_PATH"
+  if [[ -n "$notebook_name" ]]; then
+    jupyter lab "${notebook_name%.ipynb}.ipynb"
+  else
+    jupyter lab
+  fi
+}
+
+convert_notebook() {
+  local notebook_source="${1:-}"
+  local output_name="${2:-}"
+
+  if [[ -z "$notebook_source" ]]; then
+    read -r -p "Enter notebook source (path/url/repo): " notebook_source
+  fi
+
+  if [[ -n "$output_name" ]]; then
+    bash "$SCRIPT_DIR/notebook_to_draft.sh" "$notebook_source" "$output_name"
+  else
+    bash "$SCRIPT_DIR/notebook_to_draft.sh" "$notebook_source"
+  fi
+}
+
 review_draft() {
-    cd "$BLOG_REPO_PATH" || exit
-    echo "Starting Jekyll server to review drafts..."
-    bundle exec jekyll serve --drafts
+  cd "$SCRIPT_DIR"
+  bundle exec jekyll serve --drafts
 }
 
-# Function to publish the draft by moving it to _posts
 publish_draft() {
-    local title="$1"
-    local draft_file="$DRAFTS_PATH/${title}.md"
-    local today=$(date +"%Y-%m-%d")
-    local post_file="$POSTS_PATH/${today}-${title}.md"
-
-    # Check if the draft file exists
-    if [ ! -f "$draft_file" ]; then
-        echo "Error: Draft '$title.md' not found in the drafts folder."
-        exit 1
-    fi
-
-    # Move the draft to _posts
-    mv "$draft_file" "$post_file"
-    echo "Draft published as $post_file"
+  local draft_name="${1:-}"
+  if [[ -z "$draft_name" ]]; then
+    read -r -p "Enter draft slug or filename: " draft_name
+  fi
+  bash "$SCRIPT_DIR/publish_draft.sh" "$draft_name"
 }
 
-# Main script workflow
-activate_venv
 ensure_directories
 
-case "$1" in
-    new)
-        create_notebook
-        ;;
-    convert)
-        read -p "Enter the notebook title to convert to Markdown: " title
-        convert_notebook "$title"
-        add_frontmatter "$title"
-        ;;
-    review)
-        review_draft
-        ;;
-    publish)
-        read -p "Enter the title of the draft to publish: " title
-        publish_draft "$title"
-        ;;
-    *)
-        echo "Usage: $0 {new|convert|review|publish}"
-        echo "  new      - Create a new Jupyter notebook"
-        echo "  convert  - Convert notebook to markdown, add frontmatter, and save as draft"
-        echo "  review   - Start Jekyll server to review drafts"
-        echo "  publish  - Publish the reviewed draft"
-        ;;
+case "${1:-}" in
+  new)
+    create_notebook "${2:-}"
+    ;;
+  convert)
+    convert_notebook "${2:-}" "${3:-}"
+    ;;
+  review)
+    review_draft
+    ;;
+  publish)
+    publish_draft "${2:-}"
+    ;;
+  -h|--help|"")
+    usage
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
 esac
