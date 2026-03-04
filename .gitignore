@@ -27,3 +27,7 @@ package-lock.json
 _sass/dist
 assets/js/dist
 .ipynb_checkpoints
+
+# Python cache
+__pycache__/
+*.py[cod]
