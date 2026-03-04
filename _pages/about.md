@@ -21,12 +21,14 @@ latest_posts:
   limit: 5
 ---
 
-I write implementation-first notes on deep learning and LLM systems.
+Hi, I am Ravi Mandliya!
 
-The focus here is practical understanding:
+I write implementation-first notes on deep learning and LLM systems, with a strong focus on practical understanding.
+
+Here you'll mostly find posts about:
 
 - building components from scratch
 - tracing model internals
 - reasoning about tradeoffs in training and inference
 
-Most posts focus on understanding how modern ML systems actually work by implementing key components from scratch.
+Most posts are implementation-first walkthroughs of how modern ML systems actually work in practice, through hands-on implementations.
