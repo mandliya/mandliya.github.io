@@ -1,11 +1,15 @@
 {% if paginator.total_pages > 1 %}
   <nav aria-label="Blog page navigation">
     <ul class="pagination pagination-lg justify-content-center">
-      <li class="page-item {% unless paginator.previous_page %}disabled{% endunless %}">
-        <a class="page-link" href="{{ paginator.previous_page_path | relative_url }}" tabindex="-1" aria-disabled="{{ paginator.previous_page }}"
-          >&lt;</a
-        >
-      </li>
+      {% if paginator.previous_page %}
+        <li class="page-item">
+          <a class="page-link" href="{{ paginator.previous_page_path | relative_url }}" tabindex="-1" aria-label="Previous page">&lt;</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" tabindex="-1" aria-disabled="true">&lt;</span>
+        </li>
+      {% endif %}
       {% if paginator.page_trail %}
         {% for trail in paginator.page_trail %}
           <li class="page-item {% if page.url == trail.path %}active{% endif %}">
@@ -13,9 +17,15 @@
           </li>
         {% endfor %}
       {% endif %}
-      <li class="page-item {% unless paginator.next_page %}disabled{% endunless %}">
-        <a class="page-link" href="{{ paginator.next_page_path | relative_url }}">&gt;</a>
-      </li>
+      {% if paginator.next_page %}
+        <li class="page-item">
+          <a class="page-link" href="{{ paginator.next_page_path | relative_url }}" aria-label="Next page">&gt;</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-disabled="true">&gt;</span>
+        </li>
+      {% endif %}
     </ul>
   </nav>
 {% endif %}
