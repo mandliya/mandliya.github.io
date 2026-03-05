@@ -23,7 +23,7 @@ latest_posts:
 
 Hi, I am Ravi Mandliya!
 
-I am a machine learning engineer at Discord <i class="fa-brands fa-discord" aria-hidden="true"></i>. I build recommendation and notification systems using machine learning, reinforcement learning, and large language models.
+I am a machine learning engineer at Discord <i class="fa-brands fa-discord" aria-hidden="true"></i>. I build recommendation and notification systems using deep learning, reinforcement learning, and large language models.
 
 
 I write implementation-first notes focused on understanding how modern ML systems work in practice.
@@ -31,4 +31,3 @@ I write implementation-first notes focused on understanding how modern ML system
 - Currently studying: LLM inference optimization, AI safety, and advanced recommender systems
 - Open to collaboration on ML systems, AI safety and research
 - Contact: ravi.mandliya@gmail.com or [LinkedIn](https://www.linkedin.com/in/mandliya/)
-
