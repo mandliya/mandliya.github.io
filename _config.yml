@@ -27,7 +27,7 @@ max_width: 950px
 
 # Blog
 blog_name: Deeply Learning
-blog_description: "Ravi's Learnings, Code & Thoughts"
+blog_description: "Notes on Deep Learning Systems and AI Research"
 permalink: /blog/:year/:title/
 lsi: false
 

@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Machine Learning Engineer at Discord
+subtitle: "Notes on Deep Learning Systems and AI Research"
 
 profile:
   align: right
@@ -23,12 +23,12 @@ latest_posts:
 
 Hi, I am Ravi Mandliya!
 
-I write implementation-first notes on deep learning and LLM systems, with a strong focus on practical understanding.
+I am a machine learning engineer at Discord <i class="fa-brands fa-discord" aria-hidden="true"></i>. I build recommendation and notification systems using machine learning, reinforcement learning, and large language models.
 
-Here you'll mostly find posts about:
 
-- building components from scratch
-- tracing model internals
-- reasoning about tradeoffs in training and inference
+I write implementation-first notes focused on understanding how modern ML systems work in practice.
 
-Most posts are implementation-first walkthroughs of how modern ML systems actually work in practice, through hands-on implementations.
+- Currently studying: LLM inference optimization, AI safety, and advanced recommender systems
+- Open to collaboration on ML systems, AI safety and research
+- Contact: ravi.mandliya@gmail.com or [LinkedIn](https://www.linkedin.com/in/mandliya/)
+
