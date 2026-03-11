@@ -14,7 +14,6 @@ toc: true
 comments: true
 ---
 
-# Deeply Learning 2: Cross Entropy Loss Implementation from scratch
 Deeply learning one concept at a time. In this post, we implement cross entropy loss from scratch.
 
 ## Introduction
