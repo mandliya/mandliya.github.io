@@ -652,7 +652,10 @@ And this is why topological sort matters. It ensures both gradient contributions
 
 How do we know our gradients are correct? We will compare them against the numerical gradients computed via finite difference method.
 
-$$\frac{\partial f}{\partial x} \approx \frac{f(x + \epsilon) - f(x - \epsilon)}{2\epsilon}$$
+$$
+\frac{\partial f}{\partial x} \approx \frac{f(x + \epsilon) - f(x - \epsilon)}{2\epsilon}
+$$
+
 This is probably slow for most operations, but it's a good way to verify our gradients are correct.
 
 ```python
