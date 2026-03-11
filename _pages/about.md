@@ -18,7 +18,7 @@ announcements:
 latest_posts:
   enabled: true
   scrollable: true
-  limit: 5
+  limit: 10
 ---
 
 Hi, I am Ravi Mandliya!
