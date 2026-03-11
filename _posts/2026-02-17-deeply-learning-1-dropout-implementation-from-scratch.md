@@ -16,8 +16,6 @@ comments: true
 
 I am starting this series of blog posts to just jot down my learnings as I revisit the concepts of Deep Learning. This is just a fun way to keep learning, and committing a few posts per week to my blog. Just to start with, I'll implement a simple dropout layer from scratch and compare it with the PyTorch implementation. 
 
-# Deeply Learning 1: Dropout Implementation from scratch
-
 Dropout is one of the most effective regularization technniques used in Deep Learning with very simple implementation. Let's understand how it works and then implement it from scratch.
 
 ## The Core Idea
