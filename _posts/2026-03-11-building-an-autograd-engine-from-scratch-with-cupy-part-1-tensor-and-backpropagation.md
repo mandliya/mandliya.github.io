@@ -1,18 +1,13 @@
 ---
 layout: post
-title: 'Building an Autograd Engine from Scratch with CuPy: Part 1 - Tensor and Backpropagation'
+title: 'DeeplyGrad: Building an Autograd Engine from Scratch with CuPy - Part 1: Tensor and Backpropagation'
 date: '2026-03-10 23:59:47 '
-categories:
-- Deep Learning
-- AI
-tags:
-- Jupyter
-- Notebook
+categories: [Deep Learning, Neural Networks]
+tags: [Deep Learning, Autograd, Backpropagation, CuPy, Automatic Differentiation, Neural Networks, From Scratch]
 description: In this series, we are going to build a complete autograd engine from
-  scratch and then use it to build a transformer. No Pytorch or Jax, just pure pyt...
+  scratch and then use it to build a transformer. No Pytorch or Jax, Pure Python and Cupy.
 image: /assets/img/building-an-autograd-engine-from-scratch-with-cupy-part-1-tensor-and-backpropagation/cover.png
-image_alt: 'Building an Autograd Engine from Scratch with CuPy: Part 1 - Tensor and
-  Backpropagation'
+image_alt: 'DeeplyGrad: Building an Autograd Engine from Scratch with CuPy - Part 1: Tensor and Backpropagation'
 math: true
 mermaid: true
 pin: false
@@ -366,7 +361,7 @@ $$
 \frac{\partial L}{\partial b} = \frac{\partial L}{\partial \text{out}}.a
 $$
 
-Say we have $a = 3$, $b = 4$, so $\text{out} = 12$. And suppose `out` feeds into some larger computation that eventually produces a loss $L$. By the time the backward pass reaches `out`, we already know $\frac{\partial L}{\partial \text{out}}$ — that's the **upstream gradient**. Let's say it's 2.0 for this example.
+Say we have $a = 3$, $b = 4$, so $\text{out} = 12$. And suppose `out` feeds into some larger computation that eventually produces a loss $L$. By the time the backward pass reaches `out`, we already know $\frac{\partial L}{\partial \text{out}}$ that's the **upstream gradient**. Let's say it's 2.0 for this example.
 
 Now we need: what's $\frac{\partial L}{\partial a}$?
 
@@ -437,22 +432,6 @@ def mul(self, other: Union[Tensor, float, int]) -> Tensor:
   return out
 
 ```
-
-
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    /tmp/ipykernel_623/14070289.py in <cell line: 0>()
-    ----> 1 def mul(self, other: Union[Tensor, float, int]) -> Tensor:
-          2   other = _ensure_tensor(other)
-          3   out_data = self.data * other.data
-          4   out = Tensor(out_data,
-          5                requires_grad=self.requires_grad or other.requires_grad)
-
-
-    NameError: name 'Union' is not defined
-
 
 Note that every operation we implement follows almost exactly same pattern: Compute the local derivative, multiply by the upstream gradient and accumulate.
 
@@ -641,7 +620,7 @@ graph TB
         direction BT
         sum_b["Step 1: grad_loss = 1.0"]
         mul_b["Step 2: grad_y = 1.0"]
-        x_b["Step 3: grad_x<br/>= right × grad_y + left × grad_y<br/>= 3.0 × 1.0 + 3.0 × 1.0<br/>= 6.0 ✓"]
+        x_b["Step 3: grad_x<br/>= right × grad_y + left × grad_y<br/>= 3.0 × 1.0 + 3.0 × 1.0<br/>= 6.0 PASS"]
 
         sum_b --> mul_b
         mul_b -->|"∂(x·x)/∂left = right = 3.0"| x_b
@@ -673,8 +652,176 @@ And this is why topological sort matters. It ensures both gradient contributions
 
 How do we know our gradients are correct? We will compare them against the numerical gradients computed via finite difference method.
 
+$$\frac{\partial f}{\partial x} \approx \frac{f(x + \epsilon) - f(x - \epsilon)}{2\epsilon}$$
+This is probably slow for most operations, but it's a good way to verify our gradients are correct.
+
+```python
+def numerical_gradient(tensor: Tensor, f: Callable, epsilon: float = 1e-6) -> Tensor:
+  """
+  Compute the numerical gradient of a function f with respect to a tensor.
+  """
+  grad = np.zeros(tensor.shape, dtype=np.float64)
+  it = np.nditer(tensor.data, flags=['multi_index'])
+  while not it.finished:
+    idx = it.multi_index
+    original_value = tensor.data[idx]
+    tensor.data[idx] = original_value + epsilon
+    forward_value = f(tensor)
+    tensor.data[idx] = original_value - epsilon
+    backward_value = f(tensor)
+    grad[idx] = (forward_value - backward_value) / (2 * epsilon)
+    it.iternext()
+  return Tensor(grad, requires_grad=False)
+```
+
+We run this against every operation and check that the analytic and numerical gradients agree to within ~$$10^{-7}$$. Here's the output from our test suite:
+
+```text
+ackend: numpy
+==================================================
+
+--- Test: Addition ---
+  PASS a: max_diff = 2.33e-12
+  PASS b: max_diff = 2.33e-12
+
+--- Test: Multiplication ---
+  PASS a: max_diff = 2.39e-11
+  PASS b: max_diff = 6.99e-12
+
+--- Test: Matrix Multiplication ---
+  PASS A (3x4): max_diff = 6.30e-12
+  PASS B (4x2): max_diff = 8.18e-12
+
+--- Test: Power ---
+  PASS a: max_diff = 1.01e-08
+
+--- Test: Exp + Log ---
+  PASS a: max_diff = 2.33e-12
+
+--- Test: Broadcast Addition ---
+  PASS a (3x4): max_diff = 6.55e-12
+  PASS b (4,): max_diff = 6.99e-12
+
+--- Test: Broadcast Multiplication ---
+  PASS a (3x4): max_diff = 5.29e-12
+  PASS b (4,): max_diff = 3.81e-12
+
+--- Test: Linear Layer + MSE Loss ---
+  PASS W (3x2): max_diff = 1.69e-12
+  PASS b (2,): max_diff = 3.22e-12
+
+--- Test: Reshape ---
+  PASS a: max_diff = 2.33e-12
+
+--- Test: Transpose ---
+  PASS a: max_diff = 2.33e-12
+
+--- Test: Shared Node (x * x) ---
+  PASS x: max_diff = 1.27e-11
+    x = 3.0, expected grad = 6.0, got = [6.]
+
+--- Test: Multi-step Chain ---
+  PASS x: max_diff = 2.05e-10
+
+--- Test: Indexing ---
+  PASS a: max_diff = 1.10e-13
+
+--- Test: Max ---
+  PASS a: max_diff = 2.33e-12
+
+==================================================
+All tests passed!
+```
+This proves our gradients are correct! Now, let's put it all together and build a linear regression model.
+
+## Putting it all together: Building a Linear Regression Model
+Let's use our autograd engine to train on a real dataset. We will use sklearn's California housing dataset (20640 samples, 8 features including median income, house age etc and predicting median house price in $100k).
+
+We standardize the features and split into train and test sets and run a plain SGD with our deeplygrad engine.
 
 
 ```python
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
+def load_data():
+    # Load the California housing dataset
+    data = fetch_california_housing()
+    X, y = data.data, data.target
+
+    # Split into train and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Standardize the features
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
+    return X_train, y_train, X_test, y_test
 ```
+
+Now, let's build the model.
+
+```python
+def train_linear_regression(X_train, y_train, X_test, y_test, lr=0.01, epochs=100):
+    n_samples, n_features = X_train.shape
+
+    # Convert data to Tensors
+    X_train = Tensor(X_train, requires_grad=False)
+    y_train = Tensor(y_train, requires_grad=False)
+    X_test = Tensor(X_test, requires_grad=False)
+    y_test = Tensor(y_test, requires_grad=False)
+
+    # Initialize weights and bias
+    W = Tensor(xp.random.randn(n_features), requires_grad=True)
+    b = Tensor(0.0, requires_grad=True)
+
+    train_losses = []
+    test_losses = []
+
+    for epoch in range(epochs):
+        W.zero_grad()
+        b.zero_grad()
+        y_pred_train = X_train @ W + b
+        train_loss = ((y_pred_train - y_train) ** 2).mean()
+        train_loss.backward()
+        W.data -= lr * W.grad
+        b.data -= lr * b.grad
+        train_loss = float(train_loss)
+        train_losses.append(train_loss)
+        y_pred_test = X_test @ W + b
+        test_loss = ((y_pred_test - y_test) ** 2).mean()
+        test_loss = float(test_loss)
+        test_losses.append(test_loss)
+        if (epoch + 1) % 10 == 0:
+            print(f"Epoch {epoch+1}/{epochs}, Train Loss: {train_loss:.4f}, Test Loss: {test_loss:.4f}")
+
+    return W, b, train_losses, test_losses
+```
+
+The loss looks like this:
+![results_plot.png](/assets/img/building-an-autograd-engine-from-scratch-with-cupy-part-1-tensor-and-backpropagation/results_plot.png)
+
+The loss curve on the left shows both train and test MSE dropping sharply in the first 20 epochs and then gradually plateauing showing gradient descent convergence. The right plot shows the predicted vs actual prices. We can see that our model is able to learn the linear relationship between the features and the price. 
+
+## What we built
+
+Let's recap what we built.
+- We built a `Tensor` class with full backpropagation support.
+- We implemented all the operations we need for a linear regression model and then some.
+- We verified our gradients are correct using numerical gradient checking.
+- We built a linear regression model using our autograd engine and trained it on the California housing dataset.
+- We plotted the loss curve and the predicted vs actual prices.
+- The full code is available on [GitHub](https://github.com/mandliya/simplygrad).
+
+## Key Takeaways
+- Automatic differentiation works by recording a computational graph (DAG) during the forward pass, then walking it in reverse topological order to apply the chain rule.
+- Every operation stores a `_grad_fn` closure that knows how to push gradients to its inputs (parents). The pattern is always the same: multiply the upstream gradient by the local derivative, then accumulate.
+- Gradient accumulation is critical for shared nodes.(x * x example).
+- Broadcasting is handled by `_unbroadcast` which sums over the broadcast dimensions to get the gradient back to the target shape.
+- Numerical gradient checking is a good way to verify our gradients are correct.
+
+## What's next?
+
+In the next post, we'll add the operations needed for real neural networks: ReLU, GELU, softmax, cross-entropy loss, and layer normalization. We'll also build a Module base class and an SGD optimizer, and train a small MLP to make sure everything. Eventually, we'll build a transformer and train it on a real dataset.
