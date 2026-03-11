@@ -76,7 +76,7 @@ if [ ! -f "$PY_SCRIPT" ]; then
 fi
 
 NOTEBOOK_SOURCE="$1"
-OUTPUT_NAME="$2"
+OUTPUT_NAME="${2:-}"
 
 print_header
 print_info "Processing notebook source: $NOTEBOOK_SOURCE"

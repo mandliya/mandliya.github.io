@@ -174,6 +174,18 @@ third_party_libraries:
       fonts: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/"
       js: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
     version: "3.2.2"
+  mermaid:
+    integrity:
+      js: "sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="
+    url:
+      js: "https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"
+    version: "10.9.0"
+  d3:
+    integrity:
+      js: "sha256-8glLv2FBs1lyLE/kVOtsSw8OQswQzHr5IfwVj864ZTk="
+    url:
+      js: "https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"
+    version: "7.9.0"
   polyfill:
     url:
       js: "https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"
