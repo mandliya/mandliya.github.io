@@ -134,13 +134,14 @@ let setMermaidTheme = (theme) => {
   }
 
   document.querySelectorAll(".mermaid").forEach((elem) => {
-    let svgCode = elem.previousSibling.childNodes[0].innerHTML;
+    let svgCode = elem.previousSibling.childNodes[0].textContent;
     elem.removeAttribute("data-processed");
-    elem.innerHTML = svgCode;
+    elem.textContent = svgCode;
   });
 
   mermaid.initialize({ startOnLoad: false, theme: theme });
   mermaid.run({ querySelector: ".mermaid" }).then(() => {
+    if (typeof fixMermaidSvgSizes !== "undefined") fixMermaidSvgSizes();
     if (typeof d3 !== "undefined") {
       addMermaidZoom(null, null);
     }
