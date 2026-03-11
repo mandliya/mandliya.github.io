@@ -5,7 +5,7 @@ date: '2026-03-10 23:59:47 '
 categories: [Deep Learning, Neural Networks]
 tags: [Deep Learning, Autograd, Backpropagation, CuPy, Automatic Differentiation, Neural Networks, From Scratch]
 description: In this series, we are going to build a complete autograd engine from
-  scratch and then use it to build a transformer. No Pytorch or Jax, Pure Python and Cupy.
+  scratch and then use it to build a transformer. No PyTorch or JAX, pure Python and CuPy.
 image: /assets/img/building-an-autograd-engine-from-scratch-with-cupy-part-1-tensor-and-backpropagation/cover.png
 image_alt: 'DeeplyGrad: Building an Autograd Engine from Scratch with CuPy - Part 1: Tensor and Backpropagation'
 math: true
@@ -22,10 +22,10 @@ This is part 1, where we build the core `Tensor` class with full backpropagation
 ## Why build this?
 1. **Understanding**: Calling `loss.backward()` in PyTorch is literally magic until we build it ourselves. Here we will understand how it comes together with chain rule, topological sort, and gradient accumulation.
 
-2. **CuPy as backend**: CuPy mirrors the NumPy API almost perfectly but runs on GPU. By building on CuPy, we get GPU accelaration for free without writing any CUDA code. In absence of GPU, the same code falls back to NumPy with zero changes. Although, our goal is not performance, but understanding how things work under the hood. CuPy also does all the linear algebra under the hood so we can focus on understanding autograd cleanly.
+2. **CuPy as backend**: CuPy mirrors the NumPy API almost perfectly but runs on GPU. By building on CuPy, we get GPU acceleration for free without writing any CUDA code. In absence of GPU, the same code falls back to NumPy with zero changes. Although, our goal is not performance, but understanding how things work under the hood. CuPy also does all the linear algebra under the hood so we can focus on understanding autograd cleanly.
 
 ## Computation Graphs and the Chain Rule
-The core idea behind automatic differentiation is simple, every computation is a sequence of simple elementary operations (add, multiply, exp ect), and we know derivative of each one. The chain rule then helps us compose them. When we write:
+The core idea behind automatic differentiation is simple, every computation is a sequence of simple elementary operations (add, multiply, exp, etc), and we know derivative of each one. The chain rule then helps us compose them. When we write:
 
 ```python
 c = a * b
@@ -48,8 +48,8 @@ graph TB
 Each node knows:
 
 - **What operation created it?** (multiply, sum etc)
-- **Which tensors were it's input?** (it's *parents*)
-- **How to push gradients back to it's parents?** (the local derivative)
+- **Which tensors were its inputs?** (its *parents*)
+- **How to push gradients back to its parents?** (the local derivative)
 
 `backward()` walks the graph in reverse from the loss back to the parameters, and apply the chain rule at each step. This is a reverse-mode automatic differentiation and is the magic sauce of training a neural network at scale.
 
@@ -83,7 +83,7 @@ else:
 BACKEND_NAME = xp.__name__  # "numpy" or "cupy"
 
 def to_numpy(arr):
-  """Convert and arry to numpy"""
+  """Convert an array to numpy"""
   if BACKEND_NAME == "cupy":
     return arr.get()
   return arr
@@ -99,7 +99,7 @@ Now, we will build the `Tensor` class which wraps an `xp.ndarray` and adds the t
 
 1. `requires_grad`: Should we track operations on this tensor? This is usually true for a trainable parameter.
 
-2. `_parents`: THe tensors which were inputs to the operation that created this tensor.
+2. `_parents`: The tensors which were inputs to the operation that created this tensor.
 
 3. `_grad_fn`: A closure that, given the upstream gradient, pushes gradients to the parents.
 
@@ -126,30 +126,8 @@ class Tensor:
     self._parents: List[Tensor] = []
 ```
 
-```python
-"""
-deeplygrad/tensor.py - A tensor class with auto-differentiation
-"""
 
-from typing import List, Optional, Union, Callable
-from deeplygrad.backend import xp, to_numpy
-import numpy as np
-
-class Tensor:
-  def __init__(self, data, requires_grad: bool = False):
-    if isinstance(data, xp.ndarray):
-      self.data = data
-    elif isinstance(data, np.ndarray):
-      self.data = xp.array(data)
-    else:
-      self.data = xp.array(data, dtype=xp.float64)
-
-    self.grad: Optional[xp.ndarray] = None
-    self._grad_fn: Optional[Callable] = None
-    self._parents: List[Tensor] = []
-```
-
-Pretty straightforward so far. The `data` stored is an `xp.ndarray` and we have slots for the gradient and graph metdata. Now, let's add some more properties
+Pretty straightforward so far. The `data` stored is an `xp.ndarray` and we have slots for the gradient and graph metadata. Now, let's add some more properties
 
 ```python
 @property
@@ -190,7 +168,7 @@ This is the core of everything we are trying to do. The main idea is:
 
 1. Start from the loss tensor with gradient = 1 (since $\frac{\partial L}{\partial L} = 1$).
 2. **Topologically** sort the computation graph.
-3. Walk in **reverse** topological order. At each node, call it's `_grad_fn` to push gradients to its parents.
+3. Walk in **reverse** topological order. At each node, call its `_grad_fn` to push gradients to its parents.
 
 ### Why do we need to sort topologically?
 
@@ -215,7 +193,7 @@ graph TB
 ```
 
 The gradient of z with respect to x flows through two paths: one via y₁ and one via y₂. We need both $$\frac{\partial z}{\partial y_1} \cdot \frac{\partial y_1}{\partial x}$$ and $$\frac{\partial z}{\partial y_2} \cdot \frac{\partial y_2}{\partial x}$$ accumulated at x before we can propagate any further back.
-Reverse topological order guarantees this, as we will always process a node only after all it's consumers have been processed. Here's what that looks like step by step:
+Reverse topological order guarantees this, as we will always process a node only after all its consumers have been processed. Here's what that looks like step by step:
 
 ```mermaid
 graph BT
@@ -250,7 +228,7 @@ def backward(self, grad: Optional[xp.ndarray] = None):
   if grad is None:
     if self.data_size != 1:
       raise RuntimeError(
-          f"backward() without a gradient argument is only valida for scaler tensor, got shape: {self.shape}"
+          f"backward() without a gradient argument is only valid for scalar tensor, got shape: {self.shape}"
       )
     grad = xp.ones_like(self.data)
 
@@ -330,6 +308,7 @@ def add(self, other: Union[Tensor, float, int]) -> Tensor:
         g = _unbroadcast(grad_output, self.shape)
         self.grad = self.grad +  g if self.grad is not None else g
       if other.requires_grad:
+        g = _unbroadcast(grad_output, other.shape)
         other.grad = other.grad + g if other.grad is not None else g
 
     out._grad_fn = _backward
@@ -551,16 +530,16 @@ def __truediv__(self, other):  return self.div(other)
 
 ## Note on `_unbroadcast`
 
-When we are applying operations on tensors of different but compatible shapes, we often need to handle these subtle case of mismatches.
+When we are applying operations on tensors of different but compatible shapes, we often need to handle these subtle cases of mismatches.
 
-Say we are trying to compute $a + b$ where $a$ has shape $(3, 2)$ and $b$ has shape $(2,)$, the NumPy will broadcast $b$ along axis 0. The output will have shape $(3, 2)$, and therefore the gradient flowing back will also have shape $(3, 2)$. However $b$ only has shape $(2,)$. We need to sum over the broadcast dimension (axis 0) to get the gradient back to $b$'s shape:
+Say we are trying to compute $a + b$ where $a$ has shape $(3, 2)$ and $b$ has shape $(2,)$, NumPy will broadcast $b$ along axis 0. The output will have shape $(3, 2)$, and therefore the gradient flowing back will also have shape $(3, 2)$. However $b$ only has shape $(2,)$. We need to sum over the broadcast dimension (axis 0) to get the gradient back to $b$'s shape:
 
 $$\frac{\partial L}{\partial b_j} = \sum_{i=0}^{2} \frac{\partial L}{\partial \text{out}_{ij}}$$
 
 
  ![unbroadcast_diagram.png](/assets/img/building-an-autograd-engine-from-scratch-with-cupy-part-1-tensor-and-backpropagation/output_1.png)
 
-This is what `_unbroadcast` does. Note that PyTorch handles this deep inside its C++ backend (ATen). Here we are doing it in python to make the concept more clear.
+This is what `_unbroadcast` does. Note that PyTorch handles this deep inside its C++ backend (ATen). Here we are doing it in Python to make the concept more clear.
 
 ```python
 def _unbroadcast(grad, target_shape):
@@ -570,7 +549,7 @@ def _unbroadcast(grad, target_shape):
   if grad.shape == target_shape:
     return grad
 
-  # Pad target_shape with leading 1s to match grid's dim
+  # Pad target_shape with leading 1s to match grad's ndim
   ndim_diff = grad.ndim - len(target_shape)
   padded_shape = (1, ) * ndim_diff + target_shape
 
@@ -583,7 +562,7 @@ def _unbroadcast(grad, target_shape):
       reduce_axes.append(i)
 
   if reduce_axes:
-    grad = grad.sum(axia=tuple(reduce_axes), keepdims=True)
+    grad = grad.sum(axis=tuple(reduce_axes), keepdims=True)
 
   return grad.reshape(target_shape)
 ```
@@ -680,7 +659,7 @@ def numerical_gradient(tensor: Tensor, f: Callable, epsilon: float = 1e-6) -> Te
 We run this against every operation and check that the analytic and numerical gradients agree to within ~$$10^{-7}$$. Here's the output from our test suite:
 
 ```text
-ackend: numpy
+Backend: numpy
 ==================================================
 
 --- Test: Addition ---
@@ -821,10 +800,10 @@ Let's recap what we built.
 ## Key Takeaways
 - Automatic differentiation works by recording a computational graph (DAG) during the forward pass, then walking it in reverse topological order to apply the chain rule.
 - Every operation stores a `_grad_fn` closure that knows how to push gradients to its inputs (parents). The pattern is always the same: multiply the upstream gradient by the local derivative, then accumulate.
-- Gradient accumulation is critical for shared nodes.(x * x example).
+- Gradient accumulation is critical for shared nodes (x * x example).
 - Broadcasting is handled by `_unbroadcast` which sums over the broadcast dimensions to get the gradient back to the target shape.
 - Numerical gradient checking is a good way to verify our gradients are correct.
 
 ## What's next?
 
-In the next post, we'll add the operations needed for real neural networks: ReLU, GELU, softmax, cross-entropy loss, and layer normalization. We'll also build a Module base class and an SGD optimizer, and train a small MLP to make sure everything. Eventually, we'll build a transformer and train it on a real dataset.
+In the next post, we'll add the operations needed for real neural networks: ReLU, GELU, softmax, cross-entropy loss, and layer normalization. We'll also build a Module base class and an SGD optimizer, and train a small MLP to make sure everything works. Eventually, we'll build a transformer and train it on a real dataset.
