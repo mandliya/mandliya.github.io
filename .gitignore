@@ -31,3 +31,5 @@ assets/js/dist
 # Python cache
 __pycache__/
 *.py[cod]
+
+_notebooks/data/*

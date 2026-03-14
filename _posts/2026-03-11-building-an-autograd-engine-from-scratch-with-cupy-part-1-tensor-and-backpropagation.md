@@ -19,6 +19,8 @@ In this series, we are going to build a complete autograd engine from scratch an
 
 This is part 1, where we build the core `Tensor` class with full backpropagation support. By end of this post, we will train a linear regression model using our own autograd, and we will verify it using numerical gradient checking.
 
+> Code for this series is available on [GitHub](https://github.com/mandliya/simplygrad)
+
 ## Why build this?
 1. **Understanding**: Calling `loss.backward()` in PyTorch is literally magic until we build it ourselves. Here we will understand how it comes together with chain rule, topological sort, and gradient accumulation.
 
