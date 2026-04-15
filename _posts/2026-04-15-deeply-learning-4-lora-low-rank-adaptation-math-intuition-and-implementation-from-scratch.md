@@ -3,8 +3,8 @@ layout: post
 title: 'Deeply Learning 4: LoRA (Low Rank Adaptation) - Math, Intuition and Implementation
   from Scratch'
 date: '2026-04-15 01:15:11 '
-categories: [Deep Learning, Neural Networks, Fine-Tuning]
-tags: [Deep Learning, LoRA, Low-Rank Adaptation, Fine-Tuning, Parameter-Efficient Fine-Tuning, PyTorch, GPT-2, Sentiment Analysis, SST-2, From Scratch]
+categories: [Deep Learning, Neural Networks, Fine-Tuning, Transformer]
+tags: [Deep Learning, LoRA, Low-Rank Adaptation, Fine-Tuning, Parameter-Efficient Fine-Tuning, PyTorch, GPT-2, Sentiment Analysis, SST-2, From Scratch, Transformer]
 description: Full fine-tuning requires storing and updating a complete copy of every model parameter for each downstream task. LoRA sidesteps this by injecting small, trainable low-rank matrices while freezing the original weights. In this post, we derive the math behind LoRA, understand why it works through intrinsic dimensionality, implement a LoRATrainer from scratch in PyTorch, fine-tune GPT-2 on SST-2 sentiment classification, compare it against full fine-tuning, and merge the LoRA weights back for zero-cost inference.
 image: /assets/img/deeply-learning-4-lora-low-rank-adaptation-math-intuition-and-implementation-from-scratch/cover.png
 image_alt: 'Deeply Learning 4: LoRA (Low Rank Adaptation) - Math, Intuition and Implementation
